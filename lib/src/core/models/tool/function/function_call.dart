@@ -5,6 +5,16 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 class FunctionCall {
+  /// {@macro function_call}
+  const FunctionCall._({required this.value});
+
+  /// Specifying a particular function forces the model to call that function.
+  factory FunctionCall.forFunction(String functionName) {
+    return FunctionCall._(value: {
+      'name': functionName,
+    });
+  }
+
   /// Force the model to respond to the end-user instead of calling a function.
   static const none = FunctionCall._(value: 'none');
 
@@ -17,22 +27,14 @@ class FunctionCall {
   @override
   int get hashCode => value.hashCode;
 
-  /// {@macro function_call}
-  const FunctionCall._({required this.value});
-
-  /// Specifying a particular function forces the model to call that function.
-  factory FunctionCall.forFunction(String functionName) {
-    return FunctionCall._(value: {
-      'name': functionName,
-    });
-  }
-
   @override
   String toString() => value.toString();
 
   @override
   bool operator ==(covariant FunctionCall other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.value == value;
   }

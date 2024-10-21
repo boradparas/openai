@@ -2,42 +2,42 @@
 /// The class holding all endpoints for the API that are used.
 /// {@endtemplate}
 class OpenAIApisEndpoints {
+
+  /// {@macro openai_endpoints}
+  const OpenAIApisEndpoints._();
   /// none.
-  final completion = "/completions";
+  final completion = '/completions';
 
   /// none.
-  final audio = "/audio";
+  final audio = '/audio';
 
   /// none.
-  final chat = "/chat/completions";
+  final chat = '/chat/completions';
 
   /// none.
-  final edits = "/edits";
+  final edits = '/edits';
 
   /// none.
-  final embeddings = "/embeddings";
+  final embeddings = '/embeddings';
 
   /// none.
-  final files = "/files";
+  final files = '/files';
 
   /// none.
-  final fineTunes = "/fine-tunes";
+  final fineTunes = '/fine-tunes';
 
   /// none.
-  final images = "/images";
+  final images = '/images';
 
   /// none.
-  final models = "/models";
+  final models = '/models';
 
   /// none.
-  final moderation = "/moderations";
+  final moderation = '/moderations';
 
   /// {@macro openai_endpoints}
   static const OpenAIApisEndpoints _instance = OpenAIApisEndpoints._();
 
   /// {@macro openai_endpoints}
   static OpenAIApisEndpoints get instance => _instance;
-
-  /// {@macro openai_endpoints}
-  const OpenAIApisEndpoints._();
 }

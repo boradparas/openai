@@ -1,17 +1,15 @@
 import 'dart:io';
 
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/models/image/image/image.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../../core/base/images/base.dart';
+import '../../core/builder/base_api_url.dart';
 import '../../core/constants/strings.dart';
-
 import '../../core/enum.dart';
+import '../../core/models/image/image/image.dart';
+import '../../core/networking/client.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_images}
 /// The class that handles all the requests related to the images in the OpenAI API.
@@ -19,13 +17,12 @@ import 'package:http/http.dart' as http;
 @immutable
 @protected
 interface class OpenAIImages implements OpenAIImagesBase {
-  @override
-  String get endpoint => OpenAIStrings.endpoints.images;
-
   /// {@macro openai_images}
   OpenAIImages() {
     OpenAILogger.logEndpoint(endpoint);
   }
+  @override
+  String get endpoint => OpenAIStrings.endpoints.images;
 
   /// This function creates an image based on a given prompt.
   ///
@@ -74,8 +71,8 @@ interface class OpenAIImages implements OpenAIImagesBase {
   ///```
   @override
   Future<OpenAIImageModel> create({
-    String? model,
     required String prompt,
+    String? model,
     int? n,
     OpenAIImageSize? size,
     OpenAIImageStyle? style,
@@ -84,20 +81,20 @@ interface class OpenAIImages implements OpenAIImagesBase {
     String? user,
     http.Client? client,
   }) async {
-    final String generations = "/generations";
+    const String generations = '/generations';
 
-    return await OpenAINetworkingClient.post(
+    return OpenAINetworkingClient.post(
       to: BaseApiUrlBuilder.build(endpoint + generations),
-      onSuccess: (json) => OpenAIImageModel.fromMap(json),
+      onSuccess: OpenAIImageModel.fromMap,
       body: {
-        if (model != null) "model": model,
-        "prompt": prompt,
-        if (n != null) "n": n,
-        if (size != null) "size": size.value,
-        if (style != null) "style": style.value,
-        if (quality != null) "quality": quality.value,
-        if (responseFormat != null) "response_format": responseFormat.value,
-        if (user != null) "user": user,
+        if (model != null) 'model': model,
+        'prompt': prompt,
+        if (n != null) 'n': n,
+        if (size != null) 'size': size.value,
+        if (style != null) 'style': style.value,
+        if (quality != null) 'quality': quality.value,
+        if (responseFormat != null) 'response_format': responseFormat.value,
+        if (user != null) 'user': user,
       },
       client: client,
     );
@@ -147,29 +144,29 @@ interface class OpenAIImages implements OpenAIImagesBase {
   ///```
   @override
   Future<OpenAIImageModel> edit({
-    String? model,
     required File image,
-    File? mask,
     required String prompt,
+    String? model,
+    File? mask,
     int? n,
     OpenAIImageSize? size,
     OpenAIImageResponseFormat? responseFormat,
     String? user,
   }) async {
-    final String edit = "/edits";
+    const String edit = '/edits';
 
     return await OpenAINetworkingClient.imageEditForm<OpenAIImageModel>(
       image: image,
       mask: mask,
       body: {
-        if (model != null) "model": model,
-        "prompt": prompt,
-        if (n != null) "n": n.toString(),
-        if (size != null) "size": size.value,
-        if (responseFormat != null) "response_format": responseFormat.value,
-        if (user != null) "user": user,
+        if (model != null) 'model': model,
+        'prompt': prompt,
+        if (n != null) 'n': n.toString(),
+        if (size != null) 'size': size.value,
+        if (responseFormat != null) 'response_format': responseFormat.value,
+        if (user != null) 'user': user,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIImageModel.fromMap(response);
       },
       to: BaseApiUrlBuilder.build(endpoint + edit),
@@ -213,25 +210,25 @@ interface class OpenAIImages implements OpenAIImagesBase {
   /// ```
   @override
   Future<OpenAIImageModel> variation({
-    String? model,
     required File image,
+    String? model,
     int? n,
     OpenAIImageSize? size,
     OpenAIImageResponseFormat? responseFormat,
     String? user,
   }) async {
-    final String variations = "/variations";
+    const String variations = '/variations';
 
-    return await OpenAINetworkingClient.imageVariationForm<OpenAIImageModel>(
+    return OpenAINetworkingClient.imageVariationForm<OpenAIImageModel>(
       image: image,
       body: {
-        if (model != null) "model": model,
-        if (n != null) "n": n.toString(),
-        if (size != null) "size": size.value,
-        if (responseFormat != null) "response_format": responseFormat.value,
-        if (user != null) "user": user,
+        if (model != null) 'model': model,
+        if (n != null) 'n': n.toString(),
+        if (size != null) 'size': size.value,
+        if (responseFormat != null) 'response_format': responseFormat.value,
+        if (user != null) 'user': user,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIImageModel.fromMap(response);
       },
       to: BaseApiUrlBuilder.build(endpoint + variations),

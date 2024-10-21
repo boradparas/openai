@@ -1,14 +1,13 @@
-import 'package:dart_openai/dart_openai.dart';
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
-import 'package:dart_openai/src/instance/model/model.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
+import '../../../dart_openai.dart';
 import '../../core/base/fine_tunes/base.dart';
+import '../../core/builder/base_api_url.dart';
 import '../../core/constants/strings.dart';
+import '../../core/networking/client.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
+import '../model/model.dart';
 
 /// {@template openai_finetunes}
 /// This class is responsible for handling all fine-tunes requests, such as creating a fine-tune model.
@@ -16,13 +15,12 @@ import 'package:http/http.dart' as http;
 @immutable
 @protected
 interface class OpenAIFineTunes implements OpenAIFineTunesBase {
-  @override
-  String get endpoint => OpenAIStrings.endpoints.fineTunes;
-
   /// {@macro openai_finetunes}
   OpenAIFineTunes() {
     OpenAILogger.logEndpoint(endpoint);
   }
+  @override
+  String get endpoint => OpenAIStrings.endpoints.fineTunes;
 
   /// [trainingFile] is The ID of an uploaded file that contains training data. The file must be formatted as a JSONL file and uploaded with the purpose of fine-tuning.
   ///
@@ -84,28 +82,28 @@ interface class OpenAIFineTunes implements OpenAIFineTunesBase {
     String? suffix,
     http.Client? client,
   }) async {
-    return await OpenAINetworkingClient.post(
+    return OpenAINetworkingClient.post(
       body: {
-        "training_file": trainingFile,
-        if (validationFile != null) "validation_file": validationFile,
-        if (model != null) "model": model,
-        if (nEpoches != null) "n_epochs": nEpoches,
-        if (batchSize != null) "batch_size": batchSize,
+        'training_file': trainingFile,
+        if (validationFile != null) 'validation_file': validationFile,
+        if (model != null) 'model': model,
+        if (nEpoches != null) 'n_epochs': nEpoches,
+        if (batchSize != null) 'batch_size': batchSize,
         if (learningRateMultiplier != null)
-          "learning_rate_multiplier": learningRateMultiplier,
-        if (promptLossWeight != null) "prompt_loss_weight": promptLossWeight,
+          'learning_rate_multiplier': learningRateMultiplier,
+        if (promptLossWeight != null) 'prompt_loss_weight': promptLossWeight,
         if (computeClassificationMetrics != null)
-          "compute_classification_metrics": computeClassificationMetrics,
+          'compute_classification_metrics': computeClassificationMetrics,
         if (classificationNClass != null)
-          "classification_n_class": classificationNClass,
+          'classification_n_class': classificationNClass,
         if (classificationPositiveClass != null)
-          "classification_positive_class": classificationPositiveClass,
+          'classification_positive_class': classificationPositiveClass,
         if (classificationBetas != null)
-          "classification_betas": classificationBetas,
-        if (suffix != null) "suffix": suffix,
+          'classification_betas': classificationBetas,
+        if (suffix != null) 'suffix': suffix,
       },
       to: BaseApiUrlBuilder.build(endpoint),
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIFineTuneModel.fromMap(response);
       },
       client: client,
@@ -124,9 +122,9 @@ interface class OpenAIFineTunes implements OpenAIFineTunesBase {
   Future<List<OpenAIFineTuneModel>> list({
     http.Client? client,
   }) async {
-    return await OpenAINetworkingClient.get<List<OpenAIFineTuneModel>>(
+    return OpenAINetworkingClient.get<List<OpenAIFineTuneModel>>(
       from: BaseApiUrlBuilder.build(endpoint),
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         final dataList = response['data'] as List;
 
         return dataList.map((e) => OpenAIFineTuneModel.fromMap(e)).toList();
@@ -149,11 +147,11 @@ interface class OpenAIFineTunes implements OpenAIFineTunesBase {
     String fineTuneId, {
     http.Client? client,
   }) async {
-    final String fineTuneCancelEndpoint = "$endpoint/$fineTuneId/cancel";
+    final String fineTuneCancelEndpoint = '$endpoint/$fineTuneId/cancel';
 
-    return await OpenAINetworkingClient.post(
+    return OpenAINetworkingClient.post(
       to: BaseApiUrlBuilder.build(fineTuneCancelEndpoint),
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIFineTuneModel.fromMap(response);
       },
       client: client,
@@ -173,7 +171,7 @@ interface class OpenAIFineTunes implements OpenAIFineTunesBase {
     String fineTuneId, {
     http.Client? client,
   }) async {
-    return await OpenAIModel().delete(fineTuneId, client: client);
+    return OpenAIModel().delete(fineTuneId, client: client);
   }
 
   /// This function lists all events of a fine-tune job by its id.
@@ -190,11 +188,11 @@ interface class OpenAIFineTunes implements OpenAIFineTunesBase {
     String fineTuneId, {
     http.Client? client,
   }) async {
-    final String fineTuneEvents = "$endpoint/$fineTuneId/events";
+    final String fineTuneEvents = '$endpoint/$fineTuneId/events';
 
-    return await OpenAINetworkingClient.get(
+    return OpenAINetworkingClient.get(
       from: BaseApiUrlBuilder.build(fineTuneEvents),
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         final List events = response['data'] as List;
 
         return events.map((e) => OpenAIFineTuneEventModel.fromMap(e)).toList();
@@ -223,15 +221,16 @@ interface class OpenAIFineTunes implements OpenAIFineTunesBase {
   /// });
   ///
   /// ```
+  @override
   Stream<OpenAIFineTuneEventStreamModel> listEventsStream(
     String fineTuneId, {
     http.Client? client,
   }) {
-    final String fineTuneEvents = "$endpoint/$fineTuneId/events";
+    final String fineTuneEvents = '$endpoint/$fineTuneId/events';
 
     return OpenAINetworkingClient.getStream<OpenAIFineTuneEventStreamModel>(
-      from: BaseApiUrlBuilder.build(fineTuneEvents, null, "stream=true"),
-      onSuccess: (Map<String, dynamic> response) {
+      from: BaseApiUrlBuilder.build(fineTuneEvents, null, 'stream=true'),
+      onSuccess: (response) {
         return OpenAIFineTuneEventStreamModel.fromMap(response);
       },
       client: client,
@@ -252,11 +251,11 @@ interface class OpenAIFineTunes implements OpenAIFineTunesBase {
     String fineTuneId, {
     http.Client? client,
   }) async {
-    final String fineTuneRetrieve = "$endpoint/$fineTuneId";
+    final String fineTuneRetrieve = '$endpoint/$fineTuneId';
 
-    return await OpenAINetworkingClient.get<OpenAIFineTuneModel>(
+    return OpenAINetworkingClient.get<OpenAIFineTuneModel>(
       from: BaseApiUrlBuilder.build(fineTuneRetrieve),
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIFineTuneModel.fromMap(response);
       },
       client: client,

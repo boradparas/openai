@@ -14,6 +14,47 @@ export 'stream/fine_tun_event.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIFineTuneModel {
+  /// {@macro openai_fine_tune_model}
+  const OpenAIFineTuneModel({
+    required this.id,
+    required this.model,
+    required this.createdAt,
+    required this.events,
+    required this.fineTunedModel,
+    required this.hyperparams,
+    required this.organizationId,
+    required this.resultFiles,
+    required this.status,
+    required this.validationFiles,
+    required this.trainingFiles,
+    required this.updatedAt,
+  });
+
+  /// {@macro openai_fine_tune_model}
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFineTuneModel] object.
+  factory OpenAIFineTuneModel.fromMap(Map<String, dynamic> json) {
+    return OpenAIFineTuneModel(
+      id: json['id'],
+      model: json['model'],
+      createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at'] * 1000),
+      events: (json['events'] as List?)
+          ?.map((e) => OpenAIFineTuneEventModel.fromMap(e))
+          .toList(),
+      fineTunedModel: json['fine_tuned_model'],
+      hyperparams: OpenAIFineTuneHyperParamsModel.fromMap(json['hyperparams']),
+      organizationId: json['organization_id'],
+      resultFiles:
+          (json['result_files'] as List).map((e) => e.toString()).toList(),
+      status: json['status'],
+      validationFiles:
+          (json['validation_files'] as List).map((e) => e.toString()).toList(),
+      trainingFiles: (json['training_files'] as List)
+          .map((e) => OpenAIFineTuneTrainingFilesModel.fromMap(e))
+          .toList(),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(json['updated_at'] * 1000),
+    );
+  }
+
   /// The [id]entifier of the fine-tuning job.
   final String id;
 
@@ -87,47 +128,6 @@ final class OpenAIFineTuneModel {
         updatedAt.hashCode;
   }
 
-  /// {@macro openai_fine_tune_model}
-  const OpenAIFineTuneModel({
-    required this.id,
-    required this.model,
-    required this.createdAt,
-    required this.events,
-    required this.fineTunedModel,
-    required this.hyperparams,
-    required this.organizationId,
-    required this.resultFiles,
-    required this.status,
-    required this.validationFiles,
-    required this.trainingFiles,
-    required this.updatedAt,
-  });
-
-  /// {@macro openai_fine_tune_model}
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFineTuneModel] object.
-  factory OpenAIFineTuneModel.fromMap(Map<String, dynamic> json) {
-    return OpenAIFineTuneModel(
-      id: json['id'],
-      model: json['model'],
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at'] * 1000),
-      events: (json['events'] as List?)
-          ?.map((e) => OpenAIFineTuneEventModel.fromMap(e))
-          .toList(),
-      fineTunedModel: json['fine_tuned_model'],
-      hyperparams: OpenAIFineTuneHyperParamsModel.fromMap(json['hyperparams']),
-      organizationId: json['organization_id'],
-      resultFiles:
-          (json['result_files'] as List).map((e) => e.toString()).toList(),
-      status: json['status'],
-      validationFiles:
-          (json['validation_files'] as List).map((e) => e.toString()).toList(),
-      trainingFiles: (json['training_files'] as List)
-          .map((e) => OpenAIFineTuneTrainingFilesModel.fromMap(e))
-          .toList(),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(json['updated_at'] * 1000),
-    );
-  }
-
   @override
   String toString() {
     return 'OpenAIFineTuneModel(id: $id, model: $model, createdAt: $createdAt, events: $events, fineTunedModel: $fineTunedModel, hyperparams: $hyperparams, organizationId: $organizationId, resultFiles: $resultFiles, status: $status, validationFiles: $validationFiles, trainingFiles: $trainingFiles, updatedAt: $updatedAt)';
@@ -135,7 +135,9 @@ final class OpenAIFineTuneModel {
 
   @override
   bool operator ==(covariant OpenAIFineTuneModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
     final listEquals = const DeepCollectionEquality().equals;
 
     return other.id == id &&

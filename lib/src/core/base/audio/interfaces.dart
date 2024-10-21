@@ -9,7 +9,7 @@ abstract class CreateInterface {
     required String voice,
     OpenAIAudioSpeechResponseFormat? responseFormat,
     double? speed,
-    String outputFileName = "output",
+    String outputFileName = 'output',
     Directory? outputDirectory,
   });
 

@@ -5,21 +5,6 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIEmbeddingsUsageModel {
-  /// The number of tokens in the prompt.
-  final int? promptTokens;
-
-  /// The total number of tokens in the prompt and completion.
-  final int? totalTokens;
-
-  /// Weither the usage have a prompt tokens information.
-  bool get havePromptTokens => promptTokens != null;
-
-  /// Weither the usage have a total tokens information.
-  bool get haveTotalTokens => totalTokens != null;
-
-  @override
-  int get hashCode => promptTokens.hashCode ^ totalTokens.hashCode;
-
   /// {@macro openai_embeddings_usage_model}
   const OpenAIEmbeddingsUsageModel({
     required this.promptTokens,
@@ -36,13 +21,30 @@ final class OpenAIEmbeddingsUsageModel {
     );
   }
 
+  /// The number of tokens in the prompt.
+  final int? promptTokens;
+
+  /// The total number of tokens in the prompt and completion.
+  final int? totalTokens;
+
+  /// Weither the usage have a prompt tokens information.
+  bool get havePromptTokens => promptTokens != null;
+
+  /// Weither the usage have a total tokens information.
+  bool get haveTotalTokens => totalTokens != null;
+
+  @override
+  int get hashCode => promptTokens.hashCode ^ totalTokens.hashCode;
+
   @override
   String toString() =>
       'OpenAIEmbeddingsUsageModel(promptTokens: $promptTokens, totalTokens: $totalTokens)';
 
   @override
   bool operator ==(covariant OpenAIEmbeddingsUsageModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.promptTokens == promptTokens &&
         other.totalTokens == totalTokens;

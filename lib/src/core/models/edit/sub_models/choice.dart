@@ -5,15 +5,6 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIEditModelChoice {
-  /// The text of the choice.
-  final String text;
-
-  /// The index of the choice.
-  final int index;
-
-  @override
-  int get hashCode => text.hashCode ^ index.hashCode;
-
   /// {@macro openai_edit_model_choice}
   const OpenAIEditModelChoice({
     required this.text,
@@ -29,9 +20,20 @@ final class OpenAIEditModelChoice {
     );
   }
 
+  /// The text of the choice.
+  final String text;
+
+  /// The index of the choice.
+  final int index;
+
+  @override
+  int get hashCode => text.hashCode ^ index.hashCode;
+
   @override
   bool operator ==(covariant OpenAIEditModelChoice other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.text == text && other.index == index;
   }

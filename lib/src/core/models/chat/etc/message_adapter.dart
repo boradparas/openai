@@ -1,10 +1,12 @@
 import '../chat.dart';
 
+// ignore: avoid_classes_with_only_static_members
 /// This is a mixin class that contains  helper function(s) to adapt old text-based content to the new implementation of the content that accepts a list of content types like images.
 mixin class OpenAIMessageDynamicContentFromFieldAdapter {
   /// This is a helper function to adapt old text-based content to the new implementation of the content that accepts a list of content types like images..
   static List<OpenAIChatCompletionChoiceMessageContentItemModel>
       dynamicContentFromField(
+    // ignore: type_annotate_public_apis
     fieldData,
   ) {
     if (fieldData is String) {
@@ -28,19 +30,14 @@ mixin class OpenAIMessageDynamicContentFromFieldAdapter {
   }
 
   static List<OpenAIChatCompletionChoiceMessageContentItemModel>
-      _listOfContentItemsFrom(List listOfContentsItems) {
-    return (listOfContentsItems).map(
-      (item) {
-        if (item is! Map) {
-          throw Exception('Invalid content item, please report this issue.');
-        } else {
-          final asMap = item as Map<String, dynamic>;
-
-          return OpenAIChatCompletionChoiceMessageContentItemModel.fromMap(
-            asMap,
-          );
-        }
-      },
-    ).toList();
+      _listOfContentItemsFrom(List<dynamic> listOfContentsItems) {
+    return listOfContentsItems.map((item) {
+      if (item is! Map<String, dynamic>) {
+        throw ArgumentError(
+          'Invalid content item, expected a map. Please report this issue.',
+        );
+      }
+      return OpenAIChatCompletionChoiceMessageContentItemModel.fromJson(item);
+    }).toList();
   }
 }

@@ -6,8 +6,7 @@ import '../../../models/image/image/image.dart';
 abstract class EditInterface {
   Future<OpenAIImageModel> edit({
     required File image,
-    File? mask,
-    required String prompt,
+    required String prompt, File? mask,
     int? n,
     OpenAIImageSize? size,
     OpenAIImageResponseFormat? responseFormat,

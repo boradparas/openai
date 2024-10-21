@@ -5,18 +5,6 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIFineTuneEventStreamModel {
-  /// The [level] of the event.
-  final String level;
-
-  /// The [message] of the event.
-  final String message;
-
-  /// The time the event was [created].
-  final DateTime createdAt;
-
-  @override
-  int get hashCode => level.hashCode ^ message.hashCode ^ createdAt.hashCode;
-
   /// {@macro openai_fine_tune_event_stream_model}
   const OpenAIFineTuneEventStreamModel({
     required this.level,
@@ -34,13 +22,27 @@ final class OpenAIFineTuneEventStreamModel {
     );
   }
 
+  /// The [level] of the event.
+  final String level;
+
+  /// The [message] of the event.
+  final String message;
+
+  /// The time the event was [created].
+  final DateTime createdAt;
+
+  @override
+  int get hashCode => level.hashCode ^ message.hashCode ^ createdAt.hashCode;
+
   @override
   String toString() =>
       'OpenAIFineTuneEventStreamModel(level: $level, message: $message, createdAt: $createdAt)';
 
   @override
   bool operator ==(covariant OpenAIFineTuneEventStreamModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.level == level &&
         other.message == message &&

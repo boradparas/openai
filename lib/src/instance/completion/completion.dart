@@ -1,13 +1,12 @@
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/constants/strings.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
-import 'package:dart_openai/src/core/utils/logger.dart';
-import 'package:dart_openai/src/core/models/completion/completion.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../../core/base/completion.dart';
-
-import 'package:http/http.dart' as http;
+import '../../core/builder/base_api_url.dart';
+import '../../core/constants/strings.dart';
+import '../../core/models/completion/completion.dart';
+import '../../core/networking/client.dart';
+import '../../core/utils/logger.dart';
 
 /// {@template openai_completion}
 /// This class is responsible for handling all the requests related to the completion in the OpenAI API such as creating a completion.
@@ -15,13 +14,12 @@ import 'package:http/http.dart' as http;
 @immutable
 @protected
 interface class OpenAICompletion implements OpenAICompletionBase {
-  @override
-  String get endpoint => OpenAIStrings.endpoints.completion;
-
   /// {@macro openai_completion}
   OpenAICompletion() {
     OpenAILogger.logEndpoint(endpoint);
   }
+  @override
+  String get endpoint => OpenAIStrings.endpoints.completion;
 
   /// Creates a new completion and returns a [OpenAICompletionModel] object.
   ///
@@ -112,35 +110,35 @@ interface class OpenAICompletion implements OpenAICompletionBase {
   }) async {
     assert(
       prompt is String || prompt is List<String> || prompt == null,
-      "prompt field must be a String or List<String>",
+      'prompt field must be a String or List<String>',
     );
 
     assert(
       stop is String || stop is List<String> || stop == null,
-      "stop field must be a String or List<String>",
+      'stop field must be a String or List<String>',
     );
 
-    return await OpenAINetworkingClient.post<OpenAICompletionModel>(
+    return OpenAINetworkingClient.post<OpenAICompletionModel>(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
-        "model": model,
-        if (prompt != null) "prompt": prompt,
-        if (suffix != null) "suffix": suffix,
-        if (maxTokens != null) "max_tokens": maxTokens,
-        if (temperature != null) "temperature": temperature,
-        if (topP != null) "top_p": topP,
-        if (n != null) "n": n,
-        if (logprobs != null) "logprobs": logprobs,
-        if (echo != null) "echo": echo,
-        if (stop != null) "stop": stop,
-        if (presencePenalty != null) "presence_penalty": presencePenalty,
-        if (frequencyPenalty != null) "frequency_penalty": frequencyPenalty,
-        if (bestOf != null) "best_of": bestOf,
-        if (logitBias != null) "logit_bias": logitBias,
-        if (user != null) "user": user,
-        if (seed != null) "seed": seed,
+        'model': model,
+        if (prompt != null) 'prompt': prompt,
+        if (suffix != null) 'suffix': suffix,
+        if (maxTokens != null) 'max_tokens': maxTokens,
+        if (temperature != null) 'temperature': temperature,
+        if (topP != null) 'top_p': topP,
+        if (n != null) 'n': n,
+        if (logprobs != null) 'logprobs': logprobs,
+        if (echo != null) 'echo': echo,
+        if (stop != null) 'stop': stop,
+        if (presencePenalty != null) 'presence_penalty': presencePenalty,
+        if (frequencyPenalty != null) 'frequency_penalty': frequencyPenalty,
+        if (bestOf != null) 'best_of': bestOf,
+        if (logitBias != null) 'logit_bias': logitBias,
+        if (user != null) 'user': user,
+        if (seed != null) 'seed': seed,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAICompletionModel.fromMap(response);
       },
     );
@@ -238,25 +236,25 @@ interface class OpenAICompletion implements OpenAICompletionBase {
     return OpenAINetworkingClient.postStream<OpenAIStreamCompletionModel>(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
-        "model": model,
+        'model': model,
         'stream': true,
-        if (prompt != null) "prompt": prompt,
-        if (suffix != null) "suffix": suffix,
-        if (maxTokens != null) "max_tokens": maxTokens,
-        if (temperature != null) "temperature": temperature,
-        if (topP != null) "top_p": topP,
-        if (n != null) "n": n,
-        if (logprobs != null) "logprobs": logprobs,
-        if (echo != null) "echo": echo,
-        if (stop != null) "stop": stop,
-        if (presencePenalty != null) "presence_penalty": presencePenalty,
-        if (frequencyPenalty != null) "frequency_penalty": frequencyPenalty,
-        if (bestOf != null) "best_of": bestOf,
-        if (logitBias != null) "logit_bias": logitBias,
-        if (user != null) "user": user,
-        if (seed != null) "seed": seed,
+        if (prompt != null) 'prompt': prompt,
+        if (suffix != null) 'suffix': suffix,
+        if (maxTokens != null) 'max_tokens': maxTokens,
+        if (temperature != null) 'temperature': temperature,
+        if (topP != null) 'top_p': topP,
+        if (n != null) 'n': n,
+        if (logprobs != null) 'logprobs': logprobs,
+        if (echo != null) 'echo': echo,
+        if (stop != null) 'stop': stop,
+        if (presencePenalty != null) 'presence_penalty': presencePenalty,
+        if (frequencyPenalty != null) 'frequency_penalty': frequencyPenalty,
+        if (bestOf != null) 'best_of': bestOf,
+        if (logitBias != null) 'logit_bias': logitBias,
+        if (user != null) 'user': user,
+        if (seed != null) 'seed': seed,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIStreamCompletionModel.fromMap(response);
       },
     );
@@ -351,7 +349,7 @@ interface class OpenAICompletion implements OpenAICompletionBase {
     http.Client? client,
     int? seed,
   }) {
-    Stream<OpenAIStreamCompletionModel> stream = createStream(
+    final Stream<OpenAIStreamCompletionModel> stream = createStream(
       model: model,
       prompt: prompt,
       suffix: suffix,

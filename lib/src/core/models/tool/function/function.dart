@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
@@ -11,6 +10,38 @@ export 'property.dart';
 /// This class is used to represent an OpenAI function.
 /// {@endtemplate}
 class OpenAIFunctionModel {
+  /// {@macro openai_function_model}
+  const OpenAIFunctionModel({
+    required this.name,
+    required this.parametersSchema,
+    this.description,
+  });
+
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFunctionModel] object.
+  factory OpenAIFunctionModel.fromMap(Map<String, dynamic> map) {
+    return OpenAIFunctionModel(
+      name: map['name'],
+      parametersSchema: jsonDecode(map['arguments']) as Map<String, dynamic>,
+    );
+  }
+
+  /// {@macro openai_function_model}
+  /// This a factory constructor that allows you to create a new function with valid parameters schema.
+  factory OpenAIFunctionModel.withParameters({
+    required String name,
+    required Iterable<OpenAIFunctionProperty> parameters,
+    String? description,
+  }) {
+    return OpenAIFunctionModel(
+      name: name,
+      description: description,
+      parametersSchema: OpenAIFunctionProperty.object(
+        name: '',
+        properties: parameters,
+      ).typeMap(),
+    );
+  }
+
   /// The name of the function to be called. Must be a-z, A-Z, 0-9, or contain
   /// underscores and dashes, with a maximum length of 64.
   final String name;
@@ -29,38 +60,6 @@ class OpenAIFunctionModel {
   int get hashCode =>
       name.hashCode ^ description.hashCode ^ parametersSchema.hashCode;
 
-  /// {@macro openai_function_model}
-  const OpenAIFunctionModel({
-    required this.name,
-    required this.parametersSchema,
-    this.description,
-  });
-
-  /// {@macro openai_function_model}
-  /// This a factory constructor that allows you to create a new function with valid parameters schema.
-  factory OpenAIFunctionModel.withParameters({
-    required String name,
-    String? description,
-    required Iterable<OpenAIFunctionProperty> parameters,
-  }) {
-    return OpenAIFunctionModel(
-      name: name,
-      description: description,
-      parametersSchema: OpenAIFunctionProperty.object(
-        name: '',
-        properties: parameters,
-      ).typeMap(),
-    );
-  }
-
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFunctionModel] object.
-  factory OpenAIFunctionModel.fromMap(Map<String, dynamic> map) {
-    return OpenAIFunctionModel(
-      name: map['name'],
-      parametersSchema: jsonDecode(map['arguments']) as Map<String, dynamic>,
-    );
-  }
-
   /// This method is used to convert a [OpenAIFunctionModel] object to a [Map<String, dynamic>] object.
   Map<String, dynamic> toMap() {
     return {
@@ -76,7 +75,9 @@ class OpenAIFunctionModel {
 
   @override
   bool operator ==(covariant OpenAIFunctionModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
     final mapEquals = const DeepCollectionEquality().equals;
 
     return other.name == name &&

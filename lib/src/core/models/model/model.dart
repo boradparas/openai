@@ -8,21 +8,6 @@ import 'sub_models/permission.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIModelModel {
-  /// The [id]entifier of the model.
-  final String id;
-
-  /// The name of the organization that owns the model.
-  final String ownedBy;
-
-  /// The [permission]s of the model.
-  final List<OpenAIModelModelPermission>? permission;
-
-  /// Weither the model have at least one permission in [permission].
-  bool get havePermission => permission != null;
-
-  @override
-  int get hashCode => id.hashCode ^ ownedBy.hashCode ^ permission.hashCode;
-
   /// {@macro openai_model_model}
   const OpenAIModelModel({
     required this.id,
@@ -48,13 +33,30 @@ final class OpenAIModelModel {
     );
   }
 
+  /// The [id]entifier of the model.
+  final String id;
+
+  /// The name of the organization that owns the model.
+  final String ownedBy;
+
+  /// The [permission]s of the model.
+  final List<OpenAIModelModelPermission>? permission;
+
+  /// Weither the model have at least one permission in [permission].
+  bool get havePermission => permission != null;
+
+  @override
+  int get hashCode => id.hashCode ^ ownedBy.hashCode ^ permission.hashCode;
+
   @override
   String toString() =>
       'OpenAIModelModel(id: $id, ownedBy: $ownedBy, permission: $permission)';
 
   @override
   bool operator ==(covariant OpenAIModelModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
     final listEquals = const DeepCollectionEquality().equals;
 
     return other.id == id &&

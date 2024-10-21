@@ -5,6 +5,32 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIModerationResultCategoriesModel {
+  /// This class is used to represent an OpenAI moderation job result categories.
+  const OpenAIModerationResultCategoriesModel({
+    required this.hate,
+    required this.hateAndThreatening,
+    required this.selfHarm,
+    required this.sexual,
+    required this.sexualAndMinors,
+    required this.violence,
+    required this.violenceAndGraphic,
+  });
+
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIModerationResultCategoriesModel] object.
+  factory OpenAIModerationResultCategoriesModel.fromMap(
+    Map<String, dynamic> json,
+  ) {
+    return OpenAIModerationResultCategoriesModel(
+      hate: json['hate'],
+      hateAndThreatening: json['hate/threatening'],
+      selfHarm: json['self-harm'],
+      sexual: json['sexual'],
+      sexualAndMinors: json['sexual/minors'],
+      violence: json['violence'],
+      violenceAndGraphic: json['violence/graphic'],
+    );
+  }
+
   /// The hate category.
   final bool hate;
 
@@ -71,32 +97,6 @@ final class OpenAIModerationResultCategoriesModel {
         violenceAndGraphic.hashCode;
   }
 
-  /// This class is used to represent an OpenAI moderation job result categories.
-  const OpenAIModerationResultCategoriesModel({
-    required this.hate,
-    required this.hateAndThreatening,
-    required this.selfHarm,
-    required this.sexual,
-    required this.sexualAndMinors,
-    required this.violence,
-    required this.violenceAndGraphic,
-  });
-
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIModerationResultCategoriesModel] object.
-  factory OpenAIModerationResultCategoriesModel.fromMap(
-    Map<String, dynamic> json,
-  ) {
-    return OpenAIModerationResultCategoriesModel(
-      hate: json['hate'],
-      hateAndThreatening: json['hate/threatening'],
-      selfHarm: json['self-harm'],
-      sexual: json['sexual'],
-      sexualAndMinors: json['sexual/minors'],
-      violence: json['violence'],
-      violenceAndGraphic: json['violence/graphic'],
-    );
-  }
-
   @override
   String toString() {
     return 'OpenAIModerationResultCategoriesModel(hate: $hate, hateAndThreatening: $hateAndThreatening, selfHarm: $selfHarm, sexual: $sexual, sexualAndMinors: $sexualAndMinors, violence: $violence, violenceAndGraphic: $violenceAndGraphic)';
@@ -104,7 +104,9 @@ final class OpenAIModerationResultCategoriesModel {
 
   @override
   bool operator ==(covariant OpenAIModerationResultCategoriesModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.hate == hate &&
         other.hateAndThreatening == hateAndThreatening &&

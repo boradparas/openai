@@ -1,32 +1,13 @@
+import '../../../../../../dart_openai.dart';
+import '../../../../../instance/chat/chat.dart';
+import '../../../export.dart';
+import '../../chat.dart';
 import 'sub_models/log_probs/log_probs.dart';
-import 'sub_models/message.dart';
 
 /// {@template openai_chat_completion_choice}
 /// This class represents a choice of the [OpenAIChatCompletionModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
 final class OpenAIChatCompletionChoiceModel {
-  /// The [index] of the choice.
-
-  //! This is dynamic because the API sometimes returns a [String] and sometimes an [int].
-  final index;
-
-  /// The [message] of the choice.
-  final OpenAIChatCompletionChoiceMessageModel message;
-
-  /// The [finishReason] of the choice.
-  final String? finishReason;
-
-  /// The log probability of the choice.
-  final OpenAIChatCompletionChoiceLogProbsModel? logprobs;
-
-  /// Weither the choice have a finish reason.
-  bool get haveFinishReason => finishReason != null;
-
-  @override
-  int get hashCode {
-    return index.hashCode ^ message.hashCode ^ finishReason.hashCode;
-  }
-
   /// {@macro openai_chat_completion_choice}
   const OpenAIChatCompletionChoiceModel({
     required this.index,
@@ -50,13 +31,35 @@ final class OpenAIChatCompletionChoiceModel {
     );
   }
 
+  /// The [index] of the choice.
+
+  //! This is dynamic because the API sometimes returns a [String] and sometimes an [int].
+  final index;
+
+  /// The [message] of the choice.
+  final OpenAIChatCompletionChoiceMessageModel message;
+
+  /// The [finishReason] of the choice.
+  final String? finishReason;
+
+  /// The log probability of the choice.
+  final OpenAIChatCompletionChoiceLogProbsModel? logprobs;
+
+  /// Weither the choice have a finish reason.
+  bool get haveFinishReason => finishReason != null;
+
+  @override
+  int get hashCode {
+    return index.hashCode ^ message.hashCode ^ finishReason.hashCode;
+  }
+
   /// This method used to convert the [OpenAIChatCompletionChoiceModel] to a [Map<String, dynamic>] object.
   Map<String, dynamic> toMap() {
     return {
-      "index": index,
-      "message": message.toMap(),
-      "finish_reason": finishReason,
-      "logprobs": logprobs?.toMap(),
+      'index': index,
+      'message': message.toMap(),
+      'finish_reason': finishReason,
+      'logprobs': logprobs?.toMap(),
     };
   }
 
@@ -67,7 +70,9 @@ final class OpenAIChatCompletionChoiceModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is OpenAIChatCompletionChoiceModel &&
         other.index == index &&

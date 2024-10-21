@@ -1,31 +1,35 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
+
 import 'sub_models/content.dart';
 
-class OpenAIChatCompletionChoiceLogProbsModel {
-  OpenAIChatCompletionChoiceLogProbsModel({
+part 'log_probs.g.dart';
+
+@immutable
+@JsonSerializable(explicitToJson: true)
+class OpenAIChatCompletionChoiceLogProbsModel extends Equatable {
+  /// {@macro openai_chat_completion_choice_log_probs_model}
+  const OpenAIChatCompletionChoiceLogProbsModel({
     required this.content,
   });
 
+  /// Creates a new instance from a JSON map.
+  factory OpenAIChatCompletionChoiceLogProbsModel.fromJson(
+          Map<String, dynamic> json) =>
+      _$OpenAIChatCompletionChoiceLogProbsModelFromJson(json);
+
+  /// The content containing log probabilities.
   final List<OpenAIChatCompletionChoiceLogProbsContentModel> content;
 
-  factory OpenAIChatCompletionChoiceLogProbsModel.fromMap(
-    Map<String, dynamic> json,
-  ) {
-    return OpenAIChatCompletionChoiceLogProbsModel(
-      content: json["content"] != null
-          ? List<OpenAIChatCompletionChoiceLogProbsContentModel>.from(
-              json["content"].map(
-                (x) =>
-                    OpenAIChatCompletionChoiceLogProbsContentModel.fromMap(x),
-              ),
-            )
-          : [],
-    );
-  }
+  /// Converts the instance to a JSON map.
+  Map<String, dynamic> toJson() =>
+      _$OpenAIChatCompletionChoiceLogProbsModelToJson(this);
 
-  Map<String, dynamic> toMap() {
-    return {
-      "content": content.map((x) => x.toMap()).toList(),
-    };
-  }
+  @override
+  List<Object?> get props => [content];
+
+  @override
+  String toString() =>
+      'OpenAIChatCompletionChoiceLogProbsModel(content: $content)';
 }

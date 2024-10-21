@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
-import "package:meta/meta.dart";
+import 'package:meta/meta.dart';
 
+import '../../../instance/completion/completion.dart';
 import 'sub_models/choice.dart';
 import 'sub_models/usage.dart';
 
@@ -13,6 +14,33 @@ export 'stream/completion.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAICompletionModel {
+  /// {@macro openai_completion_model}
+  const OpenAICompletionModel({
+    required this.id,
+    required this.created,
+    required this.model,
+    required this.choices,
+    required this.usage,
+    required this.systemFingerprint,
+  });
+
+  /// {@macro openai_completion_model}
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAICompletionModel] object.
+  factory OpenAICompletionModel.fromMap(Map<String, dynamic> json) {
+    return OpenAICompletionModel(
+      id: json['id'],
+      created: DateTime.fromMillisecondsSinceEpoch(json['created'] * 1000),
+      model: json['model'],
+      choices: (json['choices'] as List)
+          .map((i) => OpenAICompletionModelChoice.fromMap(i))
+          .toList(),
+      usage: json['usage'] != null
+          ? OpenAICompletionModelUsage.fromMap(json['usage'])
+          : null,
+      systemFingerprint: json['system_fingerprint'],
+    );
+  }
+
   /// The [id]entifier of the completion.
   final String id;
 
@@ -50,33 +78,6 @@ final class OpenAICompletionModel {
         systemFingerprint.hashCode;
   }
 
-  /// {@macro openai_completion_model}
-  const OpenAICompletionModel({
-    required this.id,
-    required this.created,
-    required this.model,
-    required this.choices,
-    required this.usage,
-    required this.systemFingerprint,
-  });
-
-  /// {@macro openai_completion_model}
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAICompletionModel] object.
-  factory OpenAICompletionModel.fromMap(Map<String, dynamic> json) {
-    return OpenAICompletionModel(
-      id: json['id'],
-      created: DateTime.fromMillisecondsSinceEpoch(json['created'] * 1000),
-      model: json['model'],
-      choices: (json['choices'] as List)
-          .map((i) => OpenAICompletionModelChoice.fromMap(i))
-          .toList(),
-      usage: json['usage'] != null
-          ? OpenAICompletionModelUsage.fromMap(json['usage'])
-          : null,
-      systemFingerprint: json['system_fingerprint'],
-    );
-  }
-
   @override
   String toString() {
     return 'OpenAICompletionModel(id: $id, created: $created, model: $model, choices: $choices, usage: $usage, systemFingerprint: $systemFingerprint)';
@@ -84,7 +85,9 @@ final class OpenAICompletionModel {
 
   @override
   bool operator ==(covariant OpenAICompletionModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
     final listEquals = const DeepCollectionEquality().equals;
 
     return other.id == id &&

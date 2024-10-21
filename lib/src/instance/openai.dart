@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:dart_openai/src/instance/edits/edits.dart';
-import 'package:dart_openai/src/instance/moderations/moderations.dart';
+
 import '../core/base/openai_client/base.dart';
 import '../core/builder/headers.dart';
 import '../core/constants/config.dart';
@@ -9,11 +8,13 @@ import '../core/utils/logger.dart';
 import 'audio/audio.dart';
 import 'chat/chat.dart';
 import 'completion/completion.dart';
+import 'edits/edits.dart';
 import 'embedding/embedding.dart';
 import 'files/files.dart';
 import 'fine_tunes/fine_tunes.dart';
 import 'images/images.dart';
 import 'model/model.dart';
+import 'moderations/moderations.dart';
 
 /// The main class of the package. It is a singleton class, so you can only have one instance of it.
 /// You can also access the instance by calling the [OpenAI.instance] getter.
@@ -22,6 +23,31 @@ import 'model/model.dart';
 /// ```
 @immutable
 final class OpenAI extends OpenAIClientBase {
+  // /// Wether the package is running on the web or not, example of this is the use of Flutter web.
+  // ///
+  // /// By default it is set to [false].
+  // ///
+  // /// ```dart
+  // /// OpenAI.isWeb = kIsWeb;
+  // /// ```
+  // ///
+  // static set isWeb(bool newValue) {
+  //   OpenAIConfig.isWeb = newValue;
+  // }
+
+  // /// Sets the given [client] as the new client that will be used in the requests made by the package.
+  // ///
+  // /// Example:
+  // /// ```dart
+  // /// OpenAI.httpClient = http.Client(); /// assuming that you imported the http package
+  // /// ```
+  // static set httpClient(http.Client client) {
+  //   OpenAINetworkingClient.httpClient = client;
+  // }
+
+  /// The constructor of [OpenAI]. It is private, so you can only access the instance by calling the [OpenAI.instance] getter.
+  OpenAI._();
+
   /// The singleton instance of [OpenAI].
   static final OpenAI _instance = OpenAI._();
 
@@ -32,11 +58,11 @@ final class OpenAI extends OpenAIClientBase {
   /// A [MissingApiKeyException] will be thrown, if the API key is not set.
   static OpenAI get instance {
     if (_internalApiKey == null) {
-      throw MissingApiKeyException("""
+      throw MissingApiKeyException('''
       You must set the api key before accessing the instance of this class.
       Example:
       OpenAI.apiKey = "Your API Key";
-      """);
+      ''');
     }
 
     return _instance;
@@ -153,31 +179,6 @@ final class OpenAI extends OpenAIClientBase {
   static set showResponsesLogs(bool showResponsesLogs) {
     OpenAILogger.showResponsesLogs = showResponsesLogs;
   }
-
-  // /// Wether the package is running on the web or not, example of this is the use of Flutter web.
-  // ///
-  // /// By default it is set to [false].
-  // ///
-  // /// ```dart
-  // /// OpenAI.isWeb = kIsWeb;
-  // /// ```
-  // ///
-  // static set isWeb(bool newValue) {
-  //   OpenAIConfig.isWeb = newValue;
-  // }
-
-  // /// Sets the given [client] as the new client that will be used in the requests made by the package.
-  // ///
-  // /// Example:
-  // /// ```dart
-  // /// OpenAI.httpClient = http.Client(); /// assuming that you imported the http package
-  // /// ```
-  // static set httpClient(http.Client client) {
-  //   OpenAINetworkingClient.httpClient = client;
-  // }
-
-  /// The constructor of [OpenAI]. It is private, so you can only access the instance by calling the [OpenAI.instance] getter.
-  OpenAI._();
 
   /// Adds the given [headers] to all future requests made using the package.
   ///

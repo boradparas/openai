@@ -1,6 +1,7 @@
-import 'package:dart_openai/src/core/constants/strings.dart';
-import 'package:dart_openai/src/core/utils/logger.dart';
 import 'package:meta/meta.dart';
+
+import '../utils/logger.dart';
+import 'strings.dart';
 
 /// {@template openai_config}
 /// This class is responsible about general configs for the SDK such as the base url..
@@ -11,7 +12,7 @@ abstract class OpenAIConfig {
   /// {@template openai_config_default_requests_timeOut}
   /// The default maximum duration a request can take, this will be applied to all requests, defaults to 30 seconds.
   /// {@endtemplate}
-  static final defaultRequestsTimeOut = Duration(seconds: 30);
+  static const defaultRequestsTimeOut = Duration(seconds: 30);
 
   /// {@template openai_config_requests_timeOut}
   /// The maximum duration a request can take, this will be applied to all requests, defaults to 30 seconds.

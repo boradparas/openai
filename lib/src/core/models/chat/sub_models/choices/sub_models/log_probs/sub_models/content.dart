@@ -1,14 +1,6 @@
 import 'top_prob.dart';
 
 class OpenAIChatCompletionChoiceLogProbsContentModel {
-  final String? token;
-
-  final double? logprob;
-
-  final List<int>? bytes;
-
-  final List<OpenAIChatCompletionChoiceTopLogProbsContentModel>? topLogprobs;
-
   OpenAIChatCompletionChoiceLogProbsContentModel({
     this.token,
     this.logprob,
@@ -30,6 +22,13 @@ class OpenAIChatCompletionChoiceLogProbsContentModel {
       ),
     );
   }
+  final String? token;
+
+  final double? logprob;
+
+  final List<int>? bytes;
+
+  final List<OpenAIChatCompletionChoiceTopLogProbsContentModel>? topLogprobs;
 
   Map<String, dynamic> toMap() {
     return {

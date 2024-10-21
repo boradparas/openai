@@ -1,8 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import '../../../../../enum.dart';
+import 'package:meta/meta.dart';
+
+import '../../../../../../../dart_openai.dart';
+import '../../../../../../instance/chat/chat.dart';
+import '../../../../export.dart';
 import '../../../etc/message_adapter.dart';
-import 'sub_models/content.dart';
-import 'sub_models/tool_call.dart';
+
 export 'sub_models/content.dart';
 export 'sub_models/tool_call.dart';
 
@@ -10,29 +12,6 @@ export 'sub_models/tool_call.dart';
 /// This represents the message of the [OpenAIChatCompletionChoiceModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
 final class OpenAIChatCompletionChoiceMessageModel {
-  /// The [role] of the message.
-  final OpenAIChatMessageRole role;
-
-  /// The [content] of the message.
-  final List<OpenAIChatCompletionChoiceMessageContentItemModel>? content;
-
-  /// The function that the model is requesting to call.
-  final List<OpenAIResponseToolCall>? toolCalls;
-
-  /// The message participent name.
-  final String? name;
-
-  /// Weither the message have tool calls.
-  bool get haveToolCalls => toolCalls != null;
-
-  /// Weither the message have content.
-  bool get haveContent => content != null && content!.isNotEmpty;
-
-  @override
-  int get hashCode {
-    return role.hashCode ^ content.hashCode ^ toolCalls.hashCode;
-  }
-
   /// {@macro openai_chat_completion_choice_message_model}
   const OpenAIChatCompletionChoiceMessageModel({
     required this.role,
@@ -62,14 +41,37 @@ final class OpenAIChatCompletionChoiceMessageModel {
     );
   }
 
+  /// The [role] of the message.
+  final OpenAIChatMessageRole role;
+
+  /// The [content] of the message.
+  final List<OpenAIChatCompletionChoiceMessageContentItemModel>? content;
+
+  /// The function that the model is requesting to call.
+  final List<OpenAIResponseToolCall>? toolCalls;
+
+  /// The message participent name.
+  final String? name;
+
+  /// Weither the message have tool calls.
+  bool get haveToolCalls => toolCalls != null;
+
+  /// Weither the message have content.
+  bool get haveContent => content != null && content!.isNotEmpty;
+
+  @override
+  int get hashCode {
+    return role.hashCode ^ content.hashCode ^ toolCalls.hashCode;
+  }
+
 // This method used to convert the [OpenAIChatCompletionChoiceMessageModel] to a [Map<String, dynamic>] object.
   Map<String, dynamic> toMap() {
     return {
-      "role": role.name,
-      "content": content?.map((contentItem) => contentItem.toMap()).toList(),
+      'role': role.name,
+      'content': content?.map((contentItem) => contentItem.toMap()).toList(),
       if (toolCalls != null && role == OpenAIChatMessageRole.assistant)
-        "tool_calls": toolCalls!.map((toolCall) => toolCall.toMap()).toList(),
-      if (name != null) "name": name,
+        'tool_calls': toolCalls!.map((toolCall) => toolCall.toMap()).toList(),
+      if (name != null) 'name': name,
     };
   }
 
@@ -89,7 +91,9 @@ final class OpenAIChatCompletionChoiceMessageModel {
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other is OpenAIChatCompletionChoiceMessageModel &&
         other.role == role &&
@@ -104,8 +108,8 @@ final class OpenAIChatCompletionChoiceMessageModel {
     required String toolCallId,
   }) {
     return RequestFunctionMessage(
-      content: this.content,
-      role: this.role,
+      content: content,
+      role: role,
       toolCallId: toolCallId,
     );
   }
@@ -114,11 +118,9 @@ final class OpenAIChatCompletionChoiceMessageModel {
 /// {@template openai_chat_completion_function_choice_message_model}
 /// This represents the message of the [RequestFunctionMessage] model of the OpenAI API, which is used  while using the [OpenAIChat] methods, precisely to send a response function message as a request function message for next requests.
 /// {@endtemplate}
+@reopen
 base class RequestFunctionMessage
     extends OpenAIChatCompletionChoiceMessageModel {
-  /// The [toolCallId] of the message.
-  final String toolCallId;
-
   /// {@macro openai_chat_completion_function_choice_message_model}
   RequestFunctionMessage({
     required super.role,
@@ -126,12 +128,15 @@ base class RequestFunctionMessage
     required this.toolCallId,
   });
 
+  /// The [toolCallId] of the message.
+  final String toolCallId;
+
   @override
   Map<String, dynamic> toMap() {
     return {
-      "role": role.name,
-      "content": content?.map((toolCall) => toolCall.toMap()).toList(),
-      "tool_call_id": toolCallId,
+      'role': role.name,
+      'content': content?.map((toolCall) => toolCall.toMap()).toList(),
+      'tool_call_id': toolCallId,
     };
   }
 

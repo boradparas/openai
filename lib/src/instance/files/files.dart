@@ -1,15 +1,14 @@
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/models/file/file.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
-import 'package:meta/meta.dart';
-
 import 'dart:io';
 
-import '../../core/base/files/base.dart';
-import '../../core/constants/strings.dart';
-import '../../core/utils/logger.dart';
-
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
+
+import '../../core/base/files/base.dart';
+import '../../core/builder/base_api_url.dart';
+import '../../core/constants/strings.dart';
+import '../../core/models/file/file.dart';
+import '../../core/networking/client.dart';
+import '../../core/utils/logger.dart';
 
 /// {@template openai_files}
 /// This class is responsible for handling all files requests, such as uploading a file to be used across various endpoints/features.
@@ -17,13 +16,12 @@ import 'package:http/http.dart' as http;
 @immutable
 @protected
 interface class OpenAIFiles implements OpenAIFilesBase {
-  @override
-  String get endpoint => OpenAIStrings.endpoints.files;
-
   /// {@macro openai_files}
   OpenAIFiles() {
     OpenAILogger.logEndpoint(endpoint);
   }
+  @override
+  String get endpoint => OpenAIStrings.endpoints.files;
 
   /// This method fetches for your files list that exists in your OPenAI account.
   ///
@@ -36,11 +34,11 @@ interface class OpenAIFiles implements OpenAIFilesBase {
   Future<List<OpenAIFileModel>> list({
     http.Client? client,
   }) async {
-    return await OpenAINetworkingClient.get(
+    return OpenAINetworkingClient.get(
       from: BaseApiUrlBuilder.build(endpoint),
       client: client,
-      onSuccess: (Map<String, dynamic> response) {
-        final List filesList = response["data"];
+      onSuccess: (response) {
+        final List filesList = response['data'];
 
         return filesList.map((e) => OpenAIFileModel.fromMap(e)).toList();
       },
@@ -60,11 +58,11 @@ interface class OpenAIFiles implements OpenAIFilesBase {
     String fileId, {
     http.Client? client,
   }) async {
-    final String fileIdEndpoint = "/$fileId";
+    final String fileIdEndpoint = '/$fileId';
 
-    return await OpenAINetworkingClient.get(
+    return OpenAINetworkingClient.get(
       from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIFileModel.fromMap(response);
       },
     );
@@ -83,9 +81,9 @@ interface class OpenAIFiles implements OpenAIFilesBase {
     String fileId, {
     http.Client? client,
   }) async {
-    final String fileIdEndpoint = "/$fileId/content";
+    final String fileIdEndpoint = '/$fileId/content';
 
-    return await OpenAINetworkingClient.get(
+    return OpenAINetworkingClient.get(
       from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
       returnRawResponse: true,
     );
@@ -112,13 +110,13 @@ interface class OpenAIFiles implements OpenAIFilesBase {
     required File file,
     required String purpose,
   }) async {
-    return await OpenAINetworkingClient.fileUpload(
+    return OpenAINetworkingClient.fileUpload(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
-        "purpose": purpose,
+        'purpose': purpose,
       },
       file: file,
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIFileModel.fromMap(response);
       },
     );
@@ -137,12 +135,12 @@ interface class OpenAIFiles implements OpenAIFilesBase {
     String fileId, {
     http.Client? client,
   }) async {
-    final String fileIdEndpoint = "/$fileId";
+    final String fileIdEndpoint = '/$fileId';
 
-    return await OpenAINetworkingClient.delete(
+    return OpenAINetworkingClient.delete(
       from: BaseApiUrlBuilder.build(endpoint + fileIdEndpoint),
-      onSuccess: (Map<String, dynamic> response) {
-        final bool isDeleted = response["deleted"] as bool;
+      onSuccess: (response) {
+        final bool isDeleted = response['deleted'] as bool;
 
         return isDeleted;
       },

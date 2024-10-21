@@ -5,14 +5,14 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 class RequestFailedException implements Exception {
+  /// {@macro http_request_failure_exception}
+  const RequestFailedException(this.message, this.statusCode);
+
   /// The error message of the request that failed, if any.
   final String message;
 
   /// The status code of the request that failed, if any.
   final int statusCode;
-
-  /// {@macro http_request_failure_exception}
-  RequestFailedException(this.message, this.statusCode);
 
   @override
   String toString() {

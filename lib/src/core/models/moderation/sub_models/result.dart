@@ -11,19 +11,6 @@ export 'catgeories_scores.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIModerationResultModel {
-  /// The categories of the moderation job.
-  final OpenAIModerationResultCategoriesModel categories;
-
-  /// The category scores of the moderation job.
-  final OpenAIModerationResultScoresModel categoryScores;
-
-  /// The flagged status of the moderation job.
-  final bool flagged;
-
-  @override
-  int get hashCode =>
-      categories.hashCode ^ categoryScores.hashCode ^ flagged.hashCode;
-
   /// {@macro openai_moderation_result_model}
   const OpenAIModerationResultModel({
     required this.categories,
@@ -44,13 +31,28 @@ final class OpenAIModerationResultModel {
     );
   }
 
+  /// The categories of the moderation job.
+  final OpenAIModerationResultCategoriesModel categories;
+
+  /// The category scores of the moderation job.
+  final OpenAIModerationResultScoresModel categoryScores;
+
+  /// The flagged status of the moderation job.
+  final bool flagged;
+
+  @override
+  int get hashCode =>
+      categories.hashCode ^ categoryScores.hashCode ^ flagged.hashCode;
+
   @override
   String toString() =>
       'OpenAIModerationResultModel(categories: $categories, categoryScores: $categoryScores, flagged: $flagged)';
 
   @override
   bool operator ==(covariant OpenAIModerationResultModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.categories == categories &&
         other.categoryScores == categoryScores &&

@@ -1,83 +1,107 @@
 import 'package:meta/meta.dart';
-import 'package:dart_openai/src/core/utils/logger.dart';
+import '../utils/logger.dart';
 
+// ignore: avoid_classes_with_only_static_members
 /// {@template headers_builder}
-/// This class is responsible for building the headers for all the requests.
+/// Responsible for constructing headers for all HTTP requests.
 /// {@endtemplate}
 @immutable
 @internal
 abstract class HeadersBuilder {
-  /// {@template headers_builder_api_key}
-  /// This is used to store the API key if it is set.
-  /// {@endtemplate}
+  /// {@macro headers_builder}
+  ///
+  /// **Note:** This class uses static members to maintain state across the application.
+  /// Ensure thread safety if accessed from multiple isolates.
+
+  /// The API key used for authorization.
   static String? _apiKey;
 
-  /// {@template headers_builder_organization}
-  /// This is used to store the organization id if it is set.
-  /// {@endtemplate}
+  /// The organization ID associated with the API key.
   static String? _organization;
 
-  /// This represents additional hezders to be added in all requests made by the package/
-  static Map<String, dynamic> _additionalHeadersToRequests = {};
+  /// Additional headers to include in every request.
+  static final Map<String, String> _additionalHeaders = {};
 
-  /// {@macro headers_builder_organization}
+  /// Retrieves the current organization ID.
   @internal
   static String? get organization => _organization;
 
-  /// This is used to check if the organization id is set or not.
-  static bool get isOrganizationSet => organization != null;
+  /// Indicates whether an organization ID has been set.
+  static bool get isOrganizationSet => _organization != null;
 
-  /// {@macro headers_builder_api_key}
+  /// Retrieves the current API key.
   @internal
   static String? get apiKey => _apiKey;
 
+  /// Sets the organization ID and logs the change.
+  ///
+  /// If `organizationId` is `null`, it clears the organization ID.
   @internal
   static set organization(String? organizationId) {
     _organization = organizationId;
     OpenAILogger.logOrganization(_organization);
   }
 
+  /// Sets the API key and logs the change.
+  ///
+  /// If `apiKey` is `null`, it clears the API key.
   @internal
   static set apiKey(String? apiKey) {
     _apiKey = apiKey;
     OpenAILogger.logAPIKey(_apiKey);
   }
 
-  /// {@macro headers_builder}
+  /// Builds and returns the headers map for HTTP requests.
   ///
-  /// it will return a [Map<String, String>].
+  /// Throws an [AssertionError] if the API key is not set during debug mode.
   ///
-  /// if the [organization] is set, it will be added to the headers as well.
-  /// If in anyhow the API key is not set, it will throw an [AssertionError] while debugging.
+  /// - Always includes the `'Content-Type': 'application/json'` header.
+  /// - Includes the `'Authorization'` header with the bearer token.
+  /// - If an organization ID is set, includes the `'OpenAI-Organization'` header.
+  /// - Merges any additional headers provided via [includeHeaders].
   @internal
   static Map<String, String> build() {
-    Map<String, String> headers = <String, String>{
+    final Map<String, String> headers = {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $_apiKey',
+      if (isOrganizationSet) 'OpenAI-Organization': organization!,
+      ..._additionalHeaders,
     };
 
     assert(
-      apiKey != null,
-      """
-      You must set the API key before making building any headers for a request.""",
+      _apiKey != null,
+      'API key must be set before building headers for a request.',
     );
-    headers = {
-      ...headers,
-      ..._additionalHeadersToRequests,
-      if (isOrganizationSet) 'OpenAI-Organization': organization!,
-      "Authorization": "Bearer $apiKey",
-    };
 
     return headers;
   }
 
-  /// Will save the given [headers] to the [_additionalHeadersToRequests] map. so it will be used in all requests.
+  /// Adds or updates headers that will be included in all subsequent requests.
+  ///
+  /// - Merges the provided [headers] with existing additional headers.
+  /// - Overwrites existing headers if keys conflict.
+  ///
+  /// Example:
+  /// ```dart
+  /// HeadersBuilder.includeHeaders({'Custom-Header': 'Value'});
+  /// ```
   @internal
-  static void includeHeaders(Map<String, dynamic> headers) {
-    _additionalHeadersToRequests = {
-      ..._additionalHeadersToRequests,
-      ...headers,
-    };
+  static void includeHeaders(Map<String, String> headers) {
+    _additionalHeaders.addAll(headers);
+    OpenAILogger.logIncludedHeaders(_additionalHeaders);
+  }
 
-    OpenAILogger.logIncludedHeaders(_additionalHeadersToRequests);
+  /// Clears all additional headers.
+  ///
+  /// This method can be used to reset the additional headers to an empty state.
+  ///
+  /// Example:
+  /// ```dart
+  /// HeadersBuilder.clearAdditionalHeaders();
+  /// ```
+  @internal
+  static void clearAdditionalHeaders() {
+    _additionalHeaders.clear();
+    OpenAILogger.logIncludedHeaders(_additionalHeaders);
   }
 }

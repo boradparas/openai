@@ -1,10 +1,49 @@
 import 'package:meta/meta.dart';
 
+import '../../../../../dart_openai.dart';
+
+import '../../export.dart';
+
+import '../model.dart';
+
 /// {@template openai_model_model_permission}
 ///  This class is used to represent an OpenAI model permission.
 /// {@endtemplate}
 @immutable
 final class OpenAIModelModelPermission {
+  /// This class is used to represent an OpenAI model permission, it's used in [OpenAIModelModel].
+  const OpenAIModelModelPermission({
+    this.id,
+    this.created,
+    this.allowCreateEngine,
+    this.allowSampling,
+    this.allowLogprobs,
+    this.allowSearchIndices,
+    this.allowView,
+    this.allowFineTuning,
+    this.organization,
+    this.group,
+    this.isBlocking,
+  });
+
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIModelModelPermission] object.
+  factory OpenAIModelModelPermission.fromMap(Map<String, dynamic> json) {
+    return OpenAIModelModelPermission(
+      id: json['id'],
+      created:
+          DateTime.fromMillisecondsSinceEpoch((json['created'] ?? 0) * 1000),
+      allowCreateEngine: json['allow_create_engine'],
+      allowSampling: json['allow_sampling'],
+      allowLogprobs: json['allow_logprobs'],
+      allowSearchIndices: json['allow_search_indices'],
+      allowView: json['allow_view'],
+      allowFineTuning: json['allow_fine_tuning'],
+      organization: json['organization'],
+      group: json['group'],
+      isBlocking: json['is_blocking'],
+    );
+  }
+
   /// The [id]entifier of the permission.
   final String? id;
 
@@ -53,39 +92,6 @@ final class OpenAIModelModelPermission {
         isBlocking.hashCode;
   }
 
-  /// This class is used to represent an OpenAI model permission, it's used in [OpenAIModelModel].
-  const OpenAIModelModelPermission({
-    this.id,
-    this.created,
-    this.allowCreateEngine,
-    this.allowSampling,
-    this.allowLogprobs,
-    this.allowSearchIndices,
-    this.allowView,
-    this.allowFineTuning,
-    this.organization,
-    this.group,
-    this.isBlocking,
-  });
-
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIModelModelPermission] object.
-  factory OpenAIModelModelPermission.fromMap(Map<String, dynamic> json) {
-    return OpenAIModelModelPermission(
-      id: json['id'],
-      created:
-          DateTime.fromMillisecondsSinceEpoch((json['created'] ?? 0) * 1000),
-      allowCreateEngine: json['allow_create_engine'],
-      allowSampling: json['allow_sampling'],
-      allowLogprobs: json['allow_logprobs'],
-      allowSearchIndices: json['allow_search_indices'],
-      allowView: json['allow_view'],
-      allowFineTuning: json['allow_fine_tuning'],
-      organization: json['organization'],
-      group: json['group'],
-      isBlocking: json['is_blocking'],
-    );
-  }
-
   @override
   String toString() {
     return 'OpenAIModelModelPermission(id: $id, created: $created, allowCreateEngine: $allowCreateEngine, allowSampling: $allowSampling, allowLogprobs: $allowLogprobs, allowSearchIndices: $allowSearchIndices, allowView: $allowView, allowFineTuning: $allowFineTuning, organization: $organization, group: $group, isBlocking: $isBlocking)';
@@ -93,7 +99,9 @@ final class OpenAIModelModelPermission {
 
   @override
   bool operator ==(covariant OpenAIModelModelPermission other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.id == id &&
         other.created == created &&

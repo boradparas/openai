@@ -1,13 +1,12 @@
-import 'package:dart_openai/src/core/models/edit/edit.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../../core/base/edits/edits.dart';
 import '../../core/builder/base_api_url.dart';
 import '../../core/constants/strings.dart';
+import '../../core/models/edit/edit.dart';
 import '../../core/networking/client.dart';
 import '../../core/utils/logger.dart';
-
-import 'package:http/http.dart' as http;
 
 /// {@template openai_edits}
 /// The class that handles all the requests related to the edits in the OpenAI API.
@@ -15,13 +14,12 @@ import 'package:http/http.dart' as http;
 @immutable
 @protected
 interface class OpenAIEdits implements OpenAIEditsBase {
-  @override
-  String get endpoint => OpenAIStrings.endpoints.edits;
-
   /// {@macro openai_edits}
   OpenAIEdits() {
     OpenAILogger.logEndpoint(endpoint);
   }
+  @override
+  String get endpoint => OpenAIStrings.endpoints.edits;
 
   /// Given a [prompt] and an instruction, this method will return an edited version of the prompt.
   ///
@@ -51,24 +49,24 @@ interface class OpenAIEdits implements OpenAIEditsBase {
   @override
   Future<OpenAIEditModel> create({
     required String model,
-    String? input,
     required String? instruction,
+    String? input,
     int? n,
     double? temperature,
     double? topP,
     http.Client? client,
   }) async {
-    return await OpenAINetworkingClient.post<OpenAIEditModel>(
+    return OpenAINetworkingClient.post<OpenAIEditModel>(
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
-        "model": model,
-        "instruction": instruction,
-        if (input != null) "input": input,
-        if (n != null) "n": n,
-        if (temperature != null) "temperature": temperature,
-        if (topP != null) "top_p": topP,
+        'model': model,
+        'instruction': instruction,
+        if (input != null) 'input': input,
+        if (n != null) 'n': n,
+        if (temperature != null) 'temperature': temperature,
+        if (topP != null) 'top_p': topP,
       },
-      onSuccess: (Map<String, dynamic> response) {
+      onSuccess: (response) {
         return OpenAIEditModel.fromMap(response);
       },
     );

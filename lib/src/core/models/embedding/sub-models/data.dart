@@ -6,18 +6,6 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIEmbeddingsDataModel {
-  /// The embedding of the text.
-  final List<double> embeddings;
-
-  /// The index of the text.
-  final int index;
-
-  /// Weither the embeddings have at least one item in [embeddings].
-  bool get haveEmbeddings => embeddings.isNotEmpty;
-
-  @override
-  int get hashCode => embeddings.hashCode ^ index.hashCode;
-
   /// {@macro openai_embeddings_data_model}
   const OpenAIEmbeddingsDataModel({
     required this.embeddings,
@@ -37,9 +25,23 @@ final class OpenAIEmbeddingsDataModel {
     );
   }
 
+  /// The embedding of the text.
+  final List<double> embeddings;
+
+  /// The index of the text.
+  final int index;
+
+  /// Weither the embeddings have at least one item in [embeddings].
+  bool get haveEmbeddings => embeddings.isNotEmpty;
+
+  @override
+  int get hashCode => embeddings.hashCode ^ index.hashCode;
+
   @override
   bool operator ==(covariant OpenAIEmbeddingsDataModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
     final listEquals = const DeepCollectionEquality().equals;
 
     return listEquals(other.embeddings, embeddings) && other.index == index;

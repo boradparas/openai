@@ -5,6 +5,26 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIFineTuneHyperParamsModel {
+  /// {@macro openai_fine_tune_hyper_params_model}
+  const OpenAIFineTuneHyperParamsModel({
+    required this.batchSize,
+    required this.learningRateMultiplier,
+    required this.nEpochs,
+    required this.promptLossWeight,
+  });
+
+  /// {@template openai_fine_tune_hyper_params_model_fromMap}
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFineTuneHyperParamsModel] object.
+  /// {@endtemplate}
+  factory OpenAIFineTuneHyperParamsModel.fromMap(Map<String, dynamic> json) {
+    return OpenAIFineTuneHyperParamsModel(
+      batchSize: json['batch_size'],
+      learningRateMultiplier: json['learning_rate_multiplier'],
+      nEpochs: json['n_epochs'],
+      promptLossWeight: json['prompt_loss_weight'],
+    );
+  }
+
   /// The batch size used for fine-tuning.
   final int? batchSize;
 
@@ -37,26 +57,6 @@ final class OpenAIFineTuneHyperParamsModel {
         promptLossWeight.hashCode;
   }
 
-  /// {@macro openai_fine_tune_hyper_params_model}
-  const OpenAIFineTuneHyperParamsModel({
-    required this.batchSize,
-    required this.learningRateMultiplier,
-    required this.nEpochs,
-    required this.promptLossWeight,
-  });
-
-  /// {@template openai_fine_tune_hyper_params_model_fromMap}
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFineTuneHyperParamsModel] object.
-  /// {@endtemplate}
-  factory OpenAIFineTuneHyperParamsModel.fromMap(Map<String, dynamic> json) {
-    return OpenAIFineTuneHyperParamsModel(
-      batchSize: json['batch_size'],
-      learningRateMultiplier: json['learning_rate_multiplier'],
-      nEpochs: json['n_epochs'],
-      promptLossWeight: json['prompt_loss_weight'],
-    );
-  }
-
   @override
   String toString() {
     return 'OpenAIFineTuneHyperParamsModel(batchSize: $batchSize, learningRateMultiplier: $learningRateMultiplier, nEpochs: $nEpochs, promptLossWeight: $promptLossWeight)';
@@ -64,7 +64,9 @@ final class OpenAIFineTuneHyperParamsModel {
 
   @override
   bool operator ==(covariant OpenAIFineTuneHyperParamsModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.batchSize == batchSize &&
         other.learningRateMultiplier == learningRateMultiplier &&

@@ -1,93 +1,54 @@
-import 'package:dart_openai/dart_openai.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
-import '../../../../etc/message_adapter.dart';
+import '../../../../../../../../dart_openai.dart';
+
+part 'openai_stream_chat_completion_choice_delta_model.g.dart';
 
 /// {@template openai_stream_chat_completion_choice_delta_model}
 /// This contains the [role] and [content] of the choice of the chat response.
 /// {@endtemplate}
-final class OpenAIStreamChatCompletionChoiceDeltaModel {
-  /// The [role] of the message.
-  final OpenAIChatMessageRole? role;
-
-  /// The [content] of the message.
-  final List<OpenAIChatCompletionChoiceMessageContentItemModel?>? content;
-
-  /// The [toolCalls] of the message.
-  final List<OpenAIResponseToolCall>? toolCalls;
-
-  /// Weither the message have a role or not.
-  bool get haveToolCalls => toolCalls != null;
-
-  /// Weither the message have a role or not.
-  bool get haveRole => role != null;
-
-  /// Weither the message have a content or not.
-  bool get haveContent => content != null;
-
-  @override
-  int get hashCode {
-    return role.hashCode ^ content.hashCode ^ toolCalls.hashCode;
-  }
-
-  /// {@macro openai_chat_completion_choice_message_model}
+@immutable
+@JsonSerializable(explicitToJson: true)
+class OpenAIStreamChatCompletionChoiceDeltaModel extends Equatable {
+  /// {@macro openai_stream_chat_completion_choice_delta_model}
   const OpenAIStreamChatCompletionChoiceDeltaModel({
     required this.role,
     required this.content,
     this.toolCalls,
   });
 
-  /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIChatCompletionChoiceMessageModel] object.
-  factory OpenAIStreamChatCompletionChoiceDeltaModel.fromMap(
-    Map<String, dynamic> json,
-  ) {
-    return OpenAIStreamChatCompletionChoiceDeltaModel(
-      role: json['role'] != null
-          ? OpenAIChatMessageRole.values
-              .firstWhere((role) => role.name == json['role'])
-          : null,
-      content: json['content'] != null
-          ? OpenAIMessageDynamicContentFromFieldAdapter.dynamicContentFromField(
-              json['content'],
-            )
-          : null,
-      toolCalls: json['tool_calls'] != null
-          ? (json['tool_calls'] as List)
-              .map((toolCall) => OpenAIStreamResponseToolCall.fromMap(toolCall))
-              .toList()
-          : null,
-    );
-  }
+  /// Creates a new instance from a JSON map.
+  factory OpenAIStreamChatCompletionChoiceDeltaModel.fromJson(
+          Map<String, dynamic> json) =>
+      _$OpenAIStreamChatCompletionChoiceDeltaModelFromJson(json);
 
-  /// This method used to convert the [OpenAIChatCompletionChoiceMessageModel] to a [Map<String, dynamic>] object.
-  Map<String, dynamic> toMap() {
-    return {
-      "role": role?.name,
-      "content": content,
-      "tool_calls": toolCalls?.map((toolCall) => toolCall.toMap()).toList(),
-    };
-  }
+  /// The [role] of the message.
+  @JsonKey(name: 'role')
+  final OpenAIChatMessageRole? role;
 
-  @override
-  String toString() {
-    String str = 'OpenAIChatCompletionChoiceMessageModel('
-        'role: $role, '
-        'content: $content, ';
-    if (toolCalls != null) {
-      str += 'toolCalls: $toolCalls, ';
-    }
+  /// The [content] of the message.
+  @JsonKey(name: 'content')
+  final List<OpenAIChatCompletionChoiceMessageContentItemModel?>? content;
 
-    str += ')';
+  /// The [toolCalls] of the message.
+  @JsonKey(name: 'tool_calls')
+  final List<OpenAIResponseToolCall>? toolCalls;
 
-    return str;
-  }
+  /// Whether the message has tool calls.
+  bool get haveToolCalls => toolCalls != null;
+
+  /// Whether the message has a role.
+  bool get haveRole => role != null;
+
+  /// Whether the message has content.
+  bool get haveContent => content != null;
+
+  /// Converts the instance to a JSON map.
+  Map<String, dynamic> toJson() =>
+      _$OpenAIStreamChatCompletionChoiceDeltaModelToJson(this);
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is OpenAIStreamChatCompletionChoiceDeltaModel &&
-        other.role == role &&
-        other.content == content &&
-        other.toolCalls == toolCalls;
-  }
+  List<Object?> get props => [role, content, toolCalls];
 }

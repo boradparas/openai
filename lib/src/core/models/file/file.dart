@@ -5,6 +5,27 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIFileModel {
+  /// {@macro openai_file_model}
+  const OpenAIFileModel({
+    required this.id,
+    required this.bytes,
+    required this.createdAt,
+    required this.fileName,
+    required this.purpose,
+  });
+
+  /// {@macro openai_file_model}
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFileModel] object.
+  factory OpenAIFileModel.fromMap(Map<String, dynamic> map) {
+    return OpenAIFileModel(
+      id: map['id'] as String,
+      bytes: map['bytes'] as int,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      fileName: map['filename'] as String,
+      purpose: map['purpose'] as String,
+    );
+  }
+
   /// The [id]entifier of the file. This is used to reference the file in other API calls.
   final String id;
 
@@ -29,30 +50,11 @@ final class OpenAIFileModel {
         purpose.hashCode;
   }
 
-  /// {@macro openai_file_model}
-  const OpenAIFileModel({
-    required this.id,
-    required this.bytes,
-    required this.createdAt,
-    required this.fileName,
-    required this.purpose,
-  });
-
-  /// {@macro openai_file_model}
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFileModel] object.
-  factory OpenAIFileModel.fromMap(Map<String, dynamic> map) {
-    return OpenAIFileModel(
-      id: map['id'] as String,
-      bytes: map['bytes'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
-      fileName: map['filename'] as String,
-      purpose: map['purpose'] as String,
-    );
-  }
-
   @override
   bool operator ==(covariant OpenAIFileModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.id == id &&
         other.bytes == bytes &&

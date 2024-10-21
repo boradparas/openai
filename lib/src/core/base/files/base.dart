@@ -1,4 +1,4 @@
-import 'package:dart_openai/src/core/base/entity/interfaces/enpoint.dart';
+import '../entity/interfaces/enpoint.dart';
 
 import 'interfaces/delete.dart';
 import 'interfaces/list.dart';

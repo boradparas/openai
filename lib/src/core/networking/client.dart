@@ -1,29 +1,29 @@
-import "dart:async";
-import "dart:convert";
-import "dart:io";
-import "package:dart_openai/src/core/constants/config.dart";
-import "package:dart_openai/src/core/utils/extensions.dart";
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
-import 'package:dart_openai/dart_openai.dart';
-import "package:dart_openai/src/core/builder/headers.dart";
-import "package:dart_openai/src/core/utils/logger.dart";
-import "package:http/http.dart" as http;
-import "package:meta/meta.dart";
+import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 
+import '../../../dart_openai.dart';
+import '../builder/headers.dart';
+import '../constants/config.dart';
 import '../constants/strings.dart';
-
-import "../utils/streaming_http_client_default.dart"
+import '../utils/extensions.dart';
+import '../utils/logger.dart';
+import '../utils/streaming_http_client_default.dart'
     if (dart.library.js) 'package:dart_openai/src/core/utils/streaming_http_client_web.dart'
     if (dart.library.io) 'package:dart_openai/src/core/utils/streaming_http_client_io.dart';
 
 /// Handling exceptions returned by OpenAI Stream API.
 final class _OpenAIChatStreamSink implements EventSink<String> {
+
+  _OpenAIChatStreamSink(this._sink);
   final EventSink<String> _sink;
 
   final List<String> _carries = [];
 
-  _OpenAIChatStreamSink(this._sink);
-
+  @override
   void add(String str) {
     final isStartOfResponse = str.startsWith(OpenAIStrings.streamResponseStart);
     final isEndOfResponse = str.contains(OpenAIStrings.streamResponseEnd);
@@ -38,6 +38,7 @@ final class _OpenAIChatStreamSink implements EventSink<String> {
     }
   }
 
+  @override
   void addError(Object error, [StackTrace? stackTrace]) {
     _sink.addError(error, stackTrace);
   }
@@ -49,7 +50,9 @@ final class _OpenAIChatStreamSink implements EventSink<String> {
       add(str.substring(start, end));
     }
 
-    if (isLast) close();
+    if (isLast) {
+      close();
+    }
   }
 
   void addCarryIfNeeded() {
@@ -60,6 +63,7 @@ final class _OpenAIChatStreamSink implements EventSink<String> {
     }
   }
 
+  @override
   void close() {
     addCarryIfNeeded();
     _sink.close();
@@ -70,17 +74,18 @@ class OpenAIChatStreamLineSplitter
     extends StreamTransformerBase<String, String> {
   const OpenAIChatStreamLineSplitter();
 
+  @override
   Stream<String> bind(Stream<String> stream) {
-    Stream<String> lineStream = LineSplitter().bind(stream);
+    final Stream<String> lineStream = const LineSplitter().bind(stream);
 
     return Stream<String>.eventTransformed(
       lineStream,
-      (sink) => _OpenAIChatStreamSink(sink),
+      _OpenAIChatStreamSink.new,
     );
   }
 }
 
-const openAIChatStreamLineSplitter = const LineSplitter();
+const openAIChatStreamLineSplitter = LineSplitter();
 
 @protected
 @immutable
@@ -111,7 +116,7 @@ abstract class OpenAINetworkingClient {
     OpenAILogger.requestToWithStatusCode(from, response.statusCode);
     OpenAILogger.startingDecoding();
 
-    final utf8decoder = Utf8Decoder();
+    const utf8decoder = Utf8Decoder();
 
     final convertedBody = utf8decoder.convert(response.bodyBytes);
     final Map<String, dynamic> decodedBody = decodeToMap(convertedBody);
@@ -146,7 +151,7 @@ abstract class OpenAINetworkingClient {
 
     final uri = Uri.parse(from);
 
-    final httpMethod = OpenAIStrings.getMethod;
+    const httpMethod = OpenAIStrings.getMethod;
 
     final request = http.Request(httpMethod, uri);
 
@@ -172,7 +177,7 @@ abstract class OpenAINetworkingClient {
               .where((element) => element.isNotEmpty)
               .toList();
 
-          for (String line in dataLines) {
+          for (final String line in dataLines) {
             if (line.startsWith(OpenAIStrings.streamResponseStart)) {
               final String data = line.substring(6);
               if (data.startsWith(OpenAIStrings.streamResponseEnd)) {
@@ -186,9 +191,7 @@ abstract class OpenAINetworkingClient {
             }
           }
         },
-        onDone: () {
-          close();
-        },
+        onDone: close,
         onError: (err) {
           controller.addError(err);
         },
@@ -246,7 +249,7 @@ abstract class OpenAINetworkingClient {
         OpenAILogger.unexpectedResponseGotten();
 
         throw OpenAIUnexpectedException(
-          "Expected file response, but got non-error json response",
+          'Expected file response, but got non-error json response',
           response.body,
         );
       }
@@ -255,17 +258,16 @@ abstract class OpenAINetworkingClient {
 
       OpenAILogger.requestFinishedSuccessfully();
 
-      final fileTypeHeader = "content-type";
+      const fileTypeHeader = 'content-type';
 
       final fileExtensionFromBodyResponseFormat =
-          response.headers[fileTypeHeader]?.split("/").last ?? "mp3";
+          response.headers[fileTypeHeader]?.split('/').last ?? 'mp3';
 
       final fileName =
-          outputFileName + "." + fileExtensionFromBodyResponseFormat;
+          '$outputFileName.$fileExtensionFromBodyResponseFormat';
 
       File file = File(
-        "${outputDirectory != null ? outputDirectory.path : ''}" +
-            "/" +
+        (outputDirectory != null ? outputDirectory.path : '') '/' +
             fileName,
       );
 
@@ -277,7 +279,6 @@ abstract class OpenAINetworkingClient {
 
       file = await file.writeAsBytes(
         response.bodyBytes,
-        mode: FileMode.write,
       );
 
       OpenAILogger.fileContentWrittenSuccessfully(fileName);
@@ -312,7 +313,7 @@ abstract class OpenAINetworkingClient {
 
     OpenAILogger.startingDecoding();
 
-    Utf8Decoder utf8decoder = Utf8Decoder();
+    const Utf8Decoder utf8decoder = Utf8Decoder();
 
     final convertedBody = utf8decoder.convert(response.bodyBytes);
 
@@ -347,7 +348,7 @@ abstract class OpenAINetworkingClient {
       final clientForUse = client ?? _streamingHttpClient();
       final uri = Uri.parse(to);
       final headers = HeadersBuilder.build();
-      final httpMethod = OpenAIStrings.postMethod;
+      const httpMethod = OpenAIStrings.postMethod;
       final request = http.Request(httpMethod, uri);
       request.headers.addAll(headers);
       request.body = jsonEncode(body);
@@ -363,18 +364,18 @@ abstract class OpenAINetworkingClient {
               .transform(openAIChatStreamLineSplitter);
 
           try {
-            String respondData = "";
+            String respondData = '';
             await for (final value
                 in stream.where((event) => event.isNotEmpty)) {
               final data = value;
               respondData += data;
 
               final dataLines = data
-                  .split("\n")
+                  .split('\n')
                   .where((element) => element.isNotEmpty)
                   .toList();
 
-              for (String line in dataLines) {
+              for (final String line in dataLines) {
                 if (line.startsWith(OpenAIStrings.streamResponseStart)) {
                   final String data = line.substring(6);
                   if (data.contains(OpenAIStrings.streamResponseEnd)) {
@@ -438,21 +439,23 @@ abstract class OpenAINetworkingClient {
 
     final headers = HeadersBuilder.build();
 
-    final httpMethod = OpenAIStrings.postMethod;
+    const httpMethod = OpenAIStrings.postMethod;
 
     final request = http.MultipartRequest(httpMethod, uri);
 
     request.headers.addAll(headers);
 
-    final file = await http.MultipartFile.fromPath("image", image.path);
+    final file = await http.MultipartFile.fromPath('image', image.path);
 
     final maskFile = mask != null
-        ? await http.MultipartFile.fromPath("mask", mask.path)
+        ? await http.MultipartFile.fromPath('mask', mask.path)
         : null;
 
     request.files.add(file);
 
-    if (maskFile != null) request.files.add(maskFile);
+    if (maskFile != null) {
+      request.files.add(maskFile);
+    }
 
     request.fields.addAll(body);
 
@@ -497,13 +500,13 @@ abstract class OpenAINetworkingClient {
   }) async {
     OpenAILogger.logStartRequest(to);
 
-    final httpMethod = OpenAIStrings.postMethod;
+    const httpMethod = OpenAIStrings.postMethod;
 
     final request = http.MultipartRequest(httpMethod, Uri.parse(to));
 
     request.headers.addAll(HeadersBuilder.build());
 
-    final imageFile = await http.MultipartFile.fromPath("image", image.path);
+    final imageFile = await http.MultipartFile.fromPath('image', image.path);
 
     request.fields.addAll(body);
     request.files.add(imageFile);
@@ -552,12 +555,12 @@ abstract class OpenAINetworkingClient {
     final uri = Uri.parse(to);
     final headers = HeadersBuilder.build();
 
-    final httpMethod = OpenAIStrings.postMethod;
+    const httpMethod = OpenAIStrings.postMethod;
     final request = http.MultipartRequest(httpMethod, uri);
 
     request.headers.addAll(headers);
 
-    final multiPartFile = await http.MultipartFile.fromPath("file", file.path);
+    final multiPartFile = await http.MultipartFile.fromPath('file', file.path);
 
     request.files.add(multiPartFile);
     request.fields.addAll(body);
@@ -573,7 +576,7 @@ abstract class OpenAINetworkingClient {
 
     OpenAILogger.startingDecoding();
 
-    var resultBody;
+    Object resultBody;
 
     resultBody = switch ((responseBody.canBeParsedToJson, responseMapAdapter)) {
       (true, _) => decodeToMap(responseBody),

@@ -2,38 +2,6 @@
 /// This class is used to represent an OpenAI function property.
 /// {@endtemplate}
 class OpenAIFunctionProperty {
-  /// an integer type.
-  static const functionTypeInteger = 'integer';
-
-  /// A string type.
-  static const functionTypeString = 'string';
-
-  /// A boolean type.
-  static const functionTypeBoolean = 'boolean';
-
-  /// A number type.
-  static const functionTypeNumber = 'number';
-
-  /// An array (List) type.
-  static const functionTypeArray = 'array';
-
-  /// An object (Map) type.
-  static const functionTypeObject = 'object';
-
-  /// The name of the property.
-  final String name;
-
-  /// Weither the property is required.
-  final bool isRequired;
-
-  /// The type of the property.
-  final Map<String, dynamic> _typeMap;
-
-  @override
-  int get hashCode {
-    return name.hashCode ^ _typeMap.hashCode ^ isRequired.hashCode;
-  }
-
   /// {@macro openai_function_property}
   const OpenAIFunctionProperty({
     required this.name,
@@ -46,9 +14,9 @@ class OpenAIFunctionProperty {
   /// This a factory constructor that allows you to create a new function property with a primitive type.
   factory OpenAIFunctionProperty.primitive({
     required String name,
+    required String type,
     String? description,
     bool isRequired = false,
-    required String type,
     List? enumValues,
   }) {
     return OpenAIFunctionProperty(
@@ -128,9 +96,9 @@ class OpenAIFunctionProperty {
   /// This a factory constructor that allows you to create a new function property with an array (List) type.
   factory OpenAIFunctionProperty.array({
     required String name,
+    required OpenAIFunctionProperty items,
     String? description,
     bool isRequired = false,
-    required OpenAIFunctionProperty items,
   }) {
     return OpenAIFunctionProperty(
       name: name,
@@ -147,8 +115,8 @@ class OpenAIFunctionProperty {
   /// This a factory constructor that allows you to create a new function property with an object (Map) type.
   factory OpenAIFunctionProperty.object({
     required String name,
-    String? description,
     required Iterable<OpenAIFunctionProperty> properties,
+    String? description,
     bool isRequired = false,
   }) {
     final requiredProperties = properties
@@ -170,6 +138,38 @@ class OpenAIFunctionProperty {
       },
       isRequired: isRequired,
     );
+  }
+
+  /// an integer type.
+  static const functionTypeInteger = 'integer';
+
+  /// A string type.
+  static const functionTypeString = 'string';
+
+  /// A boolean type.
+  static const functionTypeBoolean = 'boolean';
+
+  /// A number type.
+  static const functionTypeNumber = 'number';
+
+  /// An array (List) type.
+  static const functionTypeArray = 'array';
+
+  /// An object (Map) type.
+  static const functionTypeObject = 'object';
+
+  /// The name of the property.
+  final String name;
+
+  /// Weither the property is required.
+  final bool isRequired;
+
+  /// The type of the property.
+  final Map<String, dynamic> _typeMap;
+
+  @override
+  int get hashCode {
+    return name.hashCode ^ _typeMap.hashCode ^ isRequired.hashCode;
   }
 
   /// The type entry of the property.

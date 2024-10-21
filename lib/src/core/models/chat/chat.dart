@@ -1,22 +1,41 @@
-import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import '../../../instance/chat/chat.dart';
 import 'sub_models/choices/choices.dart';
 import 'sub_models/usage.dart';
 
-export 'sub_models/usage.dart';
-export 'sub_models/choices/choices.dart';
 export 'stream/chat.dart';
+export 'sub_models/choices/choices.dart';
+export 'sub_models/usage.dart';
+
+part 'openai_chat_completion_model.g.dart';
 
 /// {@template openai_chat_completion_model}
-/// This class represents the chat completion response model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
+/// This class represents the chat completion response model of the OpenAI API, which is used and returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
 @immutable
-final class OpenAIChatCompletionModel {
+@JsonSerializable(explicitToJson: true)
+class OpenAIChatCompletionModel extends Equatable {
+  /// {@macro openai_chat_completion_model}
+  const OpenAIChatCompletionModel({
+    required this.id,
+    required this.created,
+    required this.choices,
+    required this.usage,
+    this.systemFingerprint,
+  });
+
+  /// Creates a new instance from a JSON map.
+  factory OpenAIChatCompletionModel.fromJson(Map<String, dynamic> json) =>
+      _$OpenAIChatCompletionModelFromJson(json);
+
   /// The [id]entifier of the chat completion.
   final String id;
 
   /// The date and time when the chat completion was [created].
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
   final DateTime created;
 
   /// The [choices] of the chat completion.
@@ -26,71 +45,23 @@ final class OpenAIChatCompletionModel {
   final OpenAIChatCompletionUsageModel usage;
 
   /// This fingerprint represents the backend configuration that the model runs with.
+  @JsonKey(name: 'system_fingerprint')
   final String? systemFingerprint;
 
-  /// Weither the chat completion have at least one choice in [choices].
+  /// Whether the chat completion has at least one choice in [choices].
   bool get haveChoices => choices.isNotEmpty;
 
-  /// Weither the chat completion have system fingerprint.
+  /// Whether the chat completion has a system fingerprint.
   bool get haveSystemFingerprint => systemFingerprint != null;
 
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        created.hashCode ^
-        choices.hashCode ^
-        usage.hashCode ^
-        systemFingerprint.hashCode;
-  }
+  /// Converts the instance to a JSON map.
+  Map<String, dynamic> toJson() => _$OpenAIChatCompletionModelToJson(this);
 
-  /// {@macro openai_chat_completion_model}
-  const OpenAIChatCompletionModel({
-    required this.id,
-    required this.created,
-    required this.choices,
-    required this.usage,
-    required this.systemFingerprint,
-  });
+  static DateTime _fromJson(int timestamp) =>
+      DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
 
-  /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIChatCompletionModel] object.
-  factory OpenAIChatCompletionModel.fromMap(Map<String, dynamic> json) {
-    return OpenAIChatCompletionModel(
-      id: json['id'],
-      created: DateTime.fromMillisecondsSinceEpoch(json['created'] * 1000),
-      choices: (json['choices'] as List)
-          .map((choice) => OpenAIChatCompletionChoiceModel.fromMap(choice))
-          .toList(),
-      usage: OpenAIChatCompletionUsageModel.fromMap(json['usage']),
-      systemFingerprint: json['system_fingerprint'],
-    );
-  }
-
-  /// This is used to convert a [OpenAIChatCompletionModel] object to a [Map<String, dynamic>] object.
-  Map<String, dynamic> toMap() {
-    return {
-      "id": id,
-      "created": created.millisecondsSinceEpoch,
-      "choices": choices.map((e) => e.toMap()).toList(),
-      "usage": usage.toMap(),
-      "system_fingerprint": systemFingerprint,
-    };
-  }
+  static int _toJson(DateTime date) => date.millisecondsSinceEpoch ~/ 1000;
 
   @override
-  String toString() {
-    return 'OpenAIChatCompletionModel(id: $id, created: $created, choices: $choices, usage: $usage, systemFingerprint: $systemFingerprint)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    const ListEquality listEquals = ListEquality();
-    if (identical(this, other)) return true;
-
-    return other is OpenAIChatCompletionModel &&
-        other.id == id &&
-        other.created == created &&
-        listEquals.equals(other.choices, choices) &&
-        other.usage == usage &&
-        other.systemFingerprint == systemFingerprint;
-  }
+  List<Object?> get props => [id, created, choices, usage, systemFingerprint];
 }

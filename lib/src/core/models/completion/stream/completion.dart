@@ -10,6 +10,29 @@ export 'sub_models/choices.dart';
 /// {@endtemplate}
 @immutable
 final class OpenAIStreamCompletionModel {
+  /// {@macro openai_stream_completion_model}
+  const OpenAIStreamCompletionModel({
+    required this.id,
+    required this.created,
+    required this.choices,
+    required this.model,
+    required this.systemFingerprint,
+  });
+
+  /// {@macro openai_stream_completion_model}
+  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIStreamCompletionModel] object.
+  factory OpenAIStreamCompletionModel.fromMap(Map<String, dynamic> json) {
+    return OpenAIStreamCompletionModel(
+      id: json['id'],
+      created: DateTime.fromMillisecondsSinceEpoch(json['created'] * 1000),
+      choices: (json['choices'] as List)
+          .map((e) => OpenAIStreamCompletionModelChoice.fromMap(e))
+          .toList(),
+      model: json['model'],
+      systemFingerprint: json['system_fingerprint'],
+    );
+  }
+
   /// The [id]entifier of the completion.
   final String id;
 
@@ -36,32 +59,11 @@ final class OpenAIStreamCompletionModel {
     return id.hashCode ^ created.hashCode ^ choices.hashCode ^ model.hashCode;
   }
 
-  /// {@macro openai_stream_completion_model}
-  const OpenAIStreamCompletionModel({
-    required this.id,
-    required this.created,
-    required this.choices,
-    required this.model,
-    required this.systemFingerprint,
-  });
-
-  /// {@macro openai_stream_completion_model}
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIStreamCompletionModel] object.
-  factory OpenAIStreamCompletionModel.fromMap(Map<String, dynamic> json) {
-    return OpenAIStreamCompletionModel(
-      id: json['id'],
-      created: DateTime.fromMillisecondsSinceEpoch(json['created'] * 1000),
-      choices: (json['choices'] as List)
-          .map((e) => OpenAIStreamCompletionModelChoice.fromMap(e))
-          .toList(),
-      model: json['model'],
-      systemFingerprint: json['system_fingerprint'],
-    );
-  }
-
   @override
   bool operator ==(covariant OpenAIStreamCompletionModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
     final listEquals = const DeepCollectionEquality().equals;
 
     return other.id == id &&

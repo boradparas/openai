@@ -1,24 +1,22 @@
-import 'package:dart_openai/src/core/builder/base_api_url.dart';
-import 'package:dart_openai/src/core/networking/client.dart';
-
 import 'dart:io';
 
 import '../../../dart_openai.dart';
 import '../../core/base/audio/audio.dart';
+import '../../core/builder/base_api_url.dart';
 import '../../core/constants/strings.dart';
+import '../../core/networking/client.dart';
 import '../../core/utils/logger.dart';
 
 /// {@template openai_audio}
 /// This class is responsible for handling all audio requests, such as creating a transcription or translation for a given audio file.
 /// {@endtemplate}
 interface class OpenAIAudio implements OpenAIAudioBase {
-  @override
-  String get endpoint => OpenAIStrings.endpoints.audio;
-
   /// {@macro openai_audio}
   OpenAIAudio() {
     OpenAILogger.logEndpoint(endpoint);
   }
+  @override
+  String get endpoint => OpenAIStrings.endpoints.audio;
 
   /// Creates a transcription for a given audio file.
   ///
@@ -56,24 +54,22 @@ interface class OpenAIAudio implements OpenAIAudioBase {
     String? language,
     List<OpenAIAudioTimestampGranularity>? timestamp_granularities,
   }) async {
-    return await OpenAINetworkingClient.fileUpload(
+    return OpenAINetworkingClient.fileUpload(
       file: file,
-      to: BaseApiUrlBuilder.build(endpoint + "/transcriptions"),
+      to: BaseApiUrlBuilder.build('$endpoint/transcriptions'),
       body: {
-        "model": model,
-        if (prompt != null) "prompt": prompt,
-        if (responseFormat != null) "response_format": responseFormat.name,
-        if (temperature != null) "temperature": temperature.toString(),
-        if (language != null) "language": language,
+        'model': model,
+        if (prompt != null) 'prompt': prompt,
+        if (responseFormat != null) 'response_format': responseFormat.name,
+        if (temperature != null) 'temperature': temperature.toString(),
+        if (language != null) 'language': language,
         if (timestamp_granularities != null)
-          "timestamp_granularities[]":
-              timestamp_granularities.map((e) => e.name).join(","),
+          'timestamp_granularities[]':
+              timestamp_granularities.map((e) => e.name).join(','),
       },
-      onSuccess: (Map<String, dynamic> response) {
-        return OpenAIAudioModel.fromMap(response);
-      },
+      onSuccess: OpenAIAudioModel.fromMap,
       responseMapAdapter: (res) {
-        return {"text": res};
+        return {'text': res};
       },
     );
   }
@@ -107,20 +103,18 @@ interface class OpenAIAudio implements OpenAIAudioBase {
     OpenAIAudioResponseFormat? responseFormat,
     double? temperature,
   }) async {
-    return await OpenAINetworkingClient.fileUpload(
+    return OpenAINetworkingClient.fileUpload(
       file: file,
-      to: BaseApiUrlBuilder.build(endpoint + "/translations"),
+      to: BaseApiUrlBuilder.build('$endpoint/translations'),
       body: {
-        "model": model,
-        if (prompt != null) "prompt": prompt,
-        if (responseFormat != null) "response_format": responseFormat.name,
-        if (temperature != null) "temperature": temperature.toString(),
+        'model': model,
+        if (prompt != null) 'prompt': prompt,
+        if (responseFormat != null) 'response_format': responseFormat.name,
+        if (temperature != null) 'temperature': temperature.toString(),
       },
-      onSuccess: (Map<String, dynamic> response) {
-        return OpenAIAudioModel.fromMap(response);
-      },
+      onSuccess: OpenAIAudioModel.fromMap,
       responseMapAdapter: (res) {
-        return {"text": res};
+        return {'text': res};
       },
     );
   }
@@ -132,19 +126,19 @@ interface class OpenAIAudio implements OpenAIAudioBase {
     required String voice,
     OpenAIAudioSpeechResponseFormat? responseFormat,
     double? speed,
-    String outputFileName = "output",
+    String outputFileName = 'output',
     Directory? outputDirectory,
   }) async {
-    return await OpenAINetworkingClient.postAndExpectFileResponse(
-      to: BaseApiUrlBuilder.build(endpoint + "/speech"),
+    return OpenAINetworkingClient.postAndExpectFileResponse(
+      to: BaseApiUrlBuilder.build('$endpoint/speech'),
       body: {
-        "model": model,
-        "input": input,
-        "voice": voice,
-        if (responseFormat != null) "response_format": responseFormat.name,
-        if (speed != null) "speed": speed,
+        'model': model,
+        'input': input,
+        'voice': voice,
+        if (responseFormat != null) 'response_format': responseFormat.name,
+        if (speed != null) 'speed': speed,
       },
-      onFileResponse: (File res) {
+      onFileResponse: (res) {
         return res;
       },
       outputFileName: outputFileName,

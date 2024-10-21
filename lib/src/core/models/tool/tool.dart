@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:meta/meta.dart';
 
 import 'function/function.dart';
@@ -10,15 +9,6 @@ export 'function/function.dart';
 /// {@endtemplate}
 @immutable
 class OpenAIToolModel {
-  /// The type of the tool.
-  final String type;
-
-  /// The function of the tool.
-  final OpenAIFunctionModel function;
-
-  @override
-  int get hashCode => type.hashCode ^ function.hashCode;
-
   /// {@macro openai_tool_model}
   const OpenAIToolModel({
     required this.type,
@@ -33,6 +23,15 @@ class OpenAIToolModel {
     );
   }
 
+  /// The type of the tool.
+  final String type;
+
+  /// The function of the tool.
+  final OpenAIFunctionModel function;
+
+  @override
+  int get hashCode => type.hashCode ^ function.hashCode;
+
   /// This method is used to convert a [OpenAIToolModel] object to a [Map<String, dynamic>] object.
   Map<String, dynamic> toMap() {
     return {
@@ -43,7 +42,9 @@ class OpenAIToolModel {
 
   @override
   bool operator ==(covariant OpenAIToolModel other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) {
+      return true;
+    }
 
     return other.type == type && other.function == function;
   }
