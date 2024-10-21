@@ -8,7 +8,7 @@ import '../../../../chat.dart';
 import '../../../usage.dart';
 import '../message.dart';
 
-part 'openai_chat_completion_choice_message_content_item_model.g.dart';
+part 'content.g.dart';
 
 /// Enum representing the type of content item.
 enum ContentType {
@@ -52,7 +52,7 @@ class OpenAIChatCompletionChoiceMessageContentItemModel extends Equatable {
 
   /// Factory constructor for creating a text content item.
   factory OpenAIChatCompletionChoiceMessageContentItemModel.text(String text) {
-    return const OpenAIChatCompletionChoiceMessageContentItemModel(
+    return OpenAIChatCompletionChoiceMessageContentItemModel(
       type: ContentType.text,
       text: text,
     );

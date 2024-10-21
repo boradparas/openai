@@ -67,7 +67,7 @@ interface class OpenAIAudio implements OpenAIAudioBase {
           'timestamp_granularities[]':
               timestamp_granularities.map((e) => e.name).join(','),
       },
-      onSuccess: OpenAIAudioModel.fromMap,
+      onSuccess: OpenAIAudioModel.fromJson,
       responseMapAdapter: (res) {
         return {'text': res};
       },
@@ -112,7 +112,7 @@ interface class OpenAIAudio implements OpenAIAudioBase {
         if (responseFormat != null) 'response_format': responseFormat.name,
         if (temperature != null) 'temperature': temperature.toString(),
       },
-      onSuccess: OpenAIAudioModel.fromMap,
+      onSuccess: OpenAIAudioModel.fromJson,
       responseMapAdapter: (res) {
         return {'text': res};
       },

@@ -1,3 +1,7 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
+
 import '../../../../../../../../dart_openai.dart';
 import '../../../../../../../instance/chat/chat.dart';
 import '../../../../../export.dart';
@@ -6,117 +10,87 @@ import '../../../usage.dart';
 import '../message.dart';
 import 'sub_models/response_function_call.dart';
 
+part 'tool_call.g.dart';
+
 /// {@template openai_chat_completion_response_tool_call_model}
-/// This represents the tool call of the [OpenAIChatCompletionChoiceMessageModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
+/// This represents the tool call of the [OpenAIChatCompletionChoiceMessageModel] model of the OpenAI API, which is used and returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
-class OpenAIResponseToolCall {
+@immutable
+@JsonSerializable(explicitToJson: true)
+class OpenAIResponseToolCall extends Equatable {
   /// {@macro openai_chat_completion_response_tool_call_model}
-  OpenAIResponseToolCall({
-    required this.id,
-    required this.type,
+  const OpenAIResponseToolCall({
     required this.function,
+    this.id,
+    this.type,
   });
 
-  /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIResponseToolCall] object.
-  factory OpenAIResponseToolCall.fromMap(Map<String, dynamic> map) {
-    return OpenAIResponseToolCall(
-      id: map['id'],
-      type: map['type'],
-      function: OpenAIResponseFunction.fromMap(map['function']),
-    );
-  }
+  /// Creates a new instance from a JSON map.
+  factory OpenAIResponseToolCall.fromJson(Map<String, dynamic> json) =>
+      _$OpenAIResponseToolCallFromJson(json);
 
   /// The id of the tool call.
+  @JsonKey(name: 'id')
   final String? id;
 
   /// The type of the tool call.
+  @JsonKey(name: 'type')
   final String? type;
 
   /// The function of the tool call.
+  @JsonKey(name: 'function')
   final OpenAIResponseFunction function;
 
-  /// Weither the tool call have an id.
+  /// Whether the tool call has an id.
   bool get haveId => id != null;
 
-  /// Weither the tool call have a type.
+  /// Whether the tool call has a type.
   bool get haveType => type != null;
 
-  @override
-  int get hashCode => id.hashCode ^ type.hashCode ^ function.hashCode;
+  /// Converts the instance to a JSON map.
+  Map<String, dynamic> toJson() => _$OpenAIResponseToolCallToJson(this);
 
-  /// This method used to convert the [OpenAIResponseToolCall] to a [Map<String, dynamic>] object.
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'type': type,
-      'function': function.toMap(),
-    };
-  }
+  @override
+  List<Object?> get props => [id, type, function];
 
   @override
   String toString() {
-    return 'OpenAIResponseToolCall(id: $id,type: $type,function: $function)';
-  }
-
-  @override
-  bool operator ==(covariant OpenAIResponseToolCall other) {
-    if (identical(this, other)) {
-      return true;
-    }
-
-    return other.id == id && other.type == type && other.function == function;
+    return 'OpenAIResponseToolCall(id: $id, type: $type, function: $function)';
   }
 }
 
 /// {@template openai_chat_completion_response_stream_tool_call_model}
-/// This represents the stream tool call of the [OpenAIChatCompletionChoiceMessageModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
+/// This represents the stream tool call of the [OpenAIChatCompletionChoiceMessageModel] model of the OpenAI API, which is used and returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
+@immutable
+@JsonSerializable(explicitToJson: true)
 class OpenAIStreamResponseToolCall extends OpenAIResponseToolCall {
   /// {@macro openai_chat_completion_response_stream_tool_call_model}
-  OpenAIStreamResponseToolCall({
-    required super.id,
-    required super.type,
+  const OpenAIStreamResponseToolCall({
     required super.function,
     required this.index,
+    super.id,
+    super.type,
   });
 
-  /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIStreamResponseToolCall] object.
-  factory OpenAIStreamResponseToolCall.fromMap(Map<String, dynamic> map) {
-    return OpenAIStreamResponseToolCall(
-      id: map['id'],
-      type: map['type'],
-      function: OpenAIResponseFunction.fromMap(map['function']),
-      index: map['index'],
-    );
-  }
+  /// Creates a new instance from a JSON map.
+  factory OpenAIStreamResponseToolCall.fromJson(Map<String, dynamic> json) =>
+      _$OpenAIStreamResponseToolCallFromJson(json);
 
   /// The index of the tool call.
-//! please fill an issue if it happen that the index is not an int in some cases.
+  /// Please file an issue if the index is not an int in some cases.
+  @JsonKey(name: 'index')
   final int index;
 
+  /// Converts the instance to a JSON map.
   @override
-  int get hashCode => super.hashCode ^ index.hashCode;
+  Map<String, dynamic> toJson() => _$OpenAIStreamResponseToolCallToJson(this);
 
-  /// This method used to convert the [OpenAIStreamResponseToolCall] to a [Map<String, dynamic>] object.
   @override
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'type': type,
-      'function': function.toMap(),
-      'index': index,
-    };
+  List<Object?> get props => [...super.props, index];
+
+  @override
+  String toString() {
+    return 'OpenAIStreamResponseToolCall(id: $id, type: $type, function: $function, index: $index)';
   }
-
-  @override
-  bool operator ==(covariant OpenAIStreamResponseToolCall other) {
-    if (identical(this, other)) {
-      return true;
-    }
-
-    return other.index == index;
-  }
-
-  @override
-  String toString() => 'OpenAIStreamResponseToolCall(index: $index})';
 }

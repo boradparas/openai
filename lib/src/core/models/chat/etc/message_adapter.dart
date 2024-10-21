@@ -1,4 +1,5 @@
-import '../chat.dart';
+// ignore: avoid_classes_with_only_static_members
+import '../sub_models/choices/sub_models/message.dart';
 
 // ignore: avoid_classes_with_only_static_members
 /// This is a mixin class that contains  helper function(s) to adapt old text-based content to the new implementation of the content that accepts a list of content types like images.

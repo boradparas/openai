@@ -1,11 +1,15 @@
-import '../../../../instance/chat/chat.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
-export 'choices/sub_models/message.dart';
+part 'usage.g.dart';
 
 /// {@template openai_chat_completion_usage_model}
-/// This class represents the chat completion usage model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
+/// This class represents the chat completion usage model of the OpenAI API, which is used and returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
-final class OpenAIChatCompletionUsageModel {
+@immutable
+@JsonSerializable(explicitToJson: true)
+final class OpenAIChatCompletionUsageModel extends Equatable {
   /// {@macro openai_chat_completion_usage_model}
   const OpenAIChatCompletionUsageModel({
     required this.promptTokens,
@@ -13,55 +17,31 @@ final class OpenAIChatCompletionUsageModel {
     required this.totalTokens,
   });
 
-  /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIChatCompletionUsageModel] object.
-  factory OpenAIChatCompletionUsageModel.fromMap(Map<String, dynamic> json) {
-    return OpenAIChatCompletionUsageModel(
-      promptTokens: json['prompt_tokens'],
-      completionTokens: json['completion_tokens'],
-      totalTokens: json['total_tokens'],
-    );
-  }
+  /// Factory constructor for creating a new instance from a JSON map.
+  factory OpenAIChatCompletionUsageModel.fromJson(Map<String, dynamic> json) =>
+      _$OpenAIChatCompletionUsageModelFromJson(json);
+
+  /// Converts the instance to a JSON map.
+  Map<String, dynamic> toJson() => _$OpenAIChatCompletionUsageModelToJson(this);
 
   /// The number of tokens used for the prompt(s).
+  @JsonKey(name: 'prompt_tokens')
   final int promptTokens;
 
   /// The number of tokens used for the chat completion(s).
+  @JsonKey(name: 'completion_tokens')
   final int completionTokens;
 
   /// The total number of tokens used for the chat completion(s).
   /// This is the sum of [promptTokens] and [completionTokens].
+  @JsonKey(name: 'total_tokens')
   final int totalTokens;
 
   @override
-  int get hashCode {
-    return promptTokens.hashCode ^
-        completionTokens.hashCode ^
-        totalTokens.hashCode;
-  }
-
-  /// This is used to convert a [OpenAIChatCompletionUsageModel] object to a [Map<String, dynamic>] object.
-  Map<String, dynamic> toMap() {
-    return {
-      'prompt_tokens': promptTokens,
-      'completion_tokens': completionTokens,
-      'total_tokens': totalTokens,
-    };
-  }
+  List<Object?> get props => [promptTokens, completionTokens, totalTokens];
 
   @override
   String toString() {
     return 'OpenAIChatCompletionUsageModel(promptTokens: $promptTokens, completionTokens: $completionTokens, totalTokens: $totalTokens)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) {
-      return true;
-    }
-
-    return other is OpenAIChatCompletionUsageModel &&
-        other.promptTokens == promptTokens &&
-        other.completionTokens == completionTokens &&
-        other.totalTokens == totalTokens;
   }
 }

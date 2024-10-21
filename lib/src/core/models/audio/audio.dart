@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-import '../../../instance/audio/audio.dart';
-
 part 'audio.g.dart';
 
 /// {@template openai_audio_model}

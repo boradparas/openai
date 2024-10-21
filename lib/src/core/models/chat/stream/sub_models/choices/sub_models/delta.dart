@@ -3,8 +3,9 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../../../../dart_openai.dart';
+import '../../../../sub_models/choices/sub_models/message.dart';
 
-part 'openai_stream_chat_completion_choice_delta_model.g.dart';
+part 'delta.g.dart';
 
 /// {@template openai_stream_chat_completion_choice_delta_model}
 /// This contains the [role] and [content] of the choice of the chat response.

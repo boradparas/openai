@@ -1,17 +1,23 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../../../dart_openai.dart';
+import '../../../../../../../../../dart_openai.dart';
 import '../../../../../../instance/chat/chat.dart';
-import '../../../../export.dart';
-import '../../../etc/message_adapter.dart';
+import 'sub_models/content.dart';
+import 'sub_models/tool_call.dart';
 
 export 'sub_models/content.dart';
 export 'sub_models/tool_call.dart';
 
+part 'message.g.dart';
+
 /// {@template openai_chat_completion_choice_message_model}
-/// This represents the message of the [OpenAIChatCompletionChoiceModel] model of the OpenAI API, which is used and get returned while using the [OpenAIChat] methods.
+/// This represents the message of the [OpenAIChatCompletionChoiceModel] model of the OpenAI API, which is used and returned while using the [OpenAIChat] methods.
 /// {@endtemplate}
-final class OpenAIChatCompletionChoiceMessageModel {
+@immutable
+@JsonSerializable(explicitToJson: true)
+class OpenAIChatCompletionChoiceMessageModel extends Equatable {
   /// {@macro openai_chat_completion_choice_message_model}
   const OpenAIChatCompletionChoiceMessageModel({
     required this.role,
@@ -20,86 +26,40 @@ final class OpenAIChatCompletionChoiceMessageModel {
     this.name,
   });
 
-  /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIChatCompletionChoiceMessageModel] object.
-  factory OpenAIChatCompletionChoiceMessageModel.fromMap(
+  /// Creates a new instance from a JSON map.
+  factory OpenAIChatCompletionChoiceMessageModel.fromJson(
     Map<String, dynamic> json,
-  ) {
-    return OpenAIChatCompletionChoiceMessageModel(
-      name: json['name'],
-      role: OpenAIChatMessageRole.values
-          .firstWhere((role) => role.name == json['role']),
-      content: json['content'] != null
-          ? OpenAIMessageDynamicContentFromFieldAdapter.dynamicContentFromField(
-              json['content'],
-            )
-          : null,
-      toolCalls: json['tool_calls'] != null
-          ? (json['tool_calls'] as List)
-              .map((toolCall) => OpenAIResponseToolCall.fromMap(toolCall))
-              .toList()
-          : null,
-    );
-  }
+  ) =>
+      _$OpenAIChatCompletionChoiceMessageModelFromJson(json);
 
   /// The [role] of the message.
+  @JsonKey(name: 'role')
   final OpenAIChatMessageRole role;
 
   /// The [content] of the message.
+  @JsonKey(name: 'content')
   final List<OpenAIChatCompletionChoiceMessageContentItemModel>? content;
 
   /// The function that the model is requesting to call.
+  @JsonKey(name: 'tool_calls')
   final List<OpenAIResponseToolCall>? toolCalls;
 
-  /// The message participent name.
+  /// The message participant name.
+  @JsonKey(name: 'name')
   final String? name;
 
-  /// Weither the message have tool calls.
+  /// Whether the message has tool calls.
   bool get haveToolCalls => toolCalls != null;
 
-  /// Weither the message have content.
+  /// Whether the message has content.
   bool get haveContent => content != null && content!.isNotEmpty;
 
-  @override
-  int get hashCode {
-    return role.hashCode ^ content.hashCode ^ toolCalls.hashCode;
-  }
-
-// This method used to convert the [OpenAIChatCompletionChoiceMessageModel] to a [Map<String, dynamic>] object.
-  Map<String, dynamic> toMap() {
-    return {
-      'role': role.name,
-      'content': content?.map((contentItem) => contentItem.toMap()).toList(),
-      if (toolCalls != null && role == OpenAIChatMessageRole.assistant)
-        'tool_calls': toolCalls!.map((toolCall) => toolCall.toMap()).toList(),
-      if (name != null) 'name': name,
-    };
-  }
+  /// Converts the instance to a JSON map.
+  Map<String, dynamic> toJson() =>
+      _$OpenAIChatCompletionChoiceMessageModelToJson(this);
 
   @override
-  String toString() {
-    String str = 'OpenAIChatCompletionChoiceMessageModel('
-        'role: $role, '
-        'content: $content, ';
-
-    if (toolCalls != null) {
-      str += 'toolCalls: $toolCalls, ';
-    }
-    str += ')';
-
-    return str;
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) {
-      return true;
-    }
-
-    return other is OpenAIChatCompletionChoiceMessageModel &&
-        other.role == role &&
-        other.content == content &&
-        other.toolCalls == toolCalls;
-  }
+  List<Object?> get props => [role, content, toolCalls, name];
 
   /// Converts a response function message to a request function message, so that it can be used in the next request.
   ///
@@ -113,32 +73,46 @@ final class OpenAIChatCompletionChoiceMessageModel {
       toolCallId: toolCallId,
     );
   }
+
+  @override
+  String toString() {
+    return 'OpenAIChatCompletionChoiceMessageModel(role: $role, content: $content, toolCalls: $toolCalls, name: $name)';
+  }
 }
 
 /// {@template openai_chat_completion_function_choice_message_model}
-/// This represents the message of the [RequestFunctionMessage] model of the OpenAI API, which is used  while using the [OpenAIChat] methods, precisely to send a response function message as a request function message for next requests.
+/// This represents the message of the [RequestFunctionMessage] model of the OpenAI API, which is used while using the [OpenAIChat] methods, precisely to send a response function message as a request function message for next requests.
 /// {@endtemplate}
-@reopen
-base class RequestFunctionMessage
-    extends OpenAIChatCompletionChoiceMessageModel {
+@immutable
+@JsonSerializable(explicitToJson: true)
+class RequestFunctionMessage extends OpenAIChatCompletionChoiceMessageModel {
   /// {@macro openai_chat_completion_function_choice_message_model}
-  RequestFunctionMessage({
+  const RequestFunctionMessage({
     required super.role,
     required super.content,
     required this.toolCallId,
-  });
+  }) : super(
+          toolCalls: null,
+          name: null,
+        );
+
+  /// Creates a new instance from a JSON map.
+  factory RequestFunctionMessage.fromJson(Map<String, dynamic> json) =>
+      _$RequestFunctionMessageFromJson(json);
 
   /// The [toolCallId] of the message.
+  @JsonKey(name: 'tool_call_id')
   final String toolCallId;
 
+  /// Converts the instance to a JSON map.
   @override
-  Map<String, dynamic> toMap() {
-    return {
-      'role': role.name,
-      'content': content?.map((toolCall) => toolCall.toMap()).toList(),
-      'tool_call_id': toolCallId,
-    };
-  }
+  Map<String, dynamic> toJson() => _$RequestFunctionMessageToJson(this);
 
-  //! Does this needs fromMap method?
+  @override
+  List<Object?> get props => [...super.props, toolCallId];
+
+  @override
+  String toString() {
+    return 'RequestFunctionMessage(role: $role, content: $content, toolCallId: $toolCallId)';
+  }
 }

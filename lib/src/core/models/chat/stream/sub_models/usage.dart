@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 export 'choices/choices.dart';
 
-part 'openai_stream_chat_completion_usage_model.g.dart';
+part 'usage.g.dart';
 
 /// {@template openai_stream_chat_completion_usage}
 /// The [OpenAIStreamChatCompletionUsageModel] class represents the usage model of the OpenAI API, which is used and returned while using the chat methods that leverage [Stream] functionality.

@@ -10,7 +10,7 @@ export 'stream/chat.dart';
 export 'sub_models/choices/choices.dart';
 export 'sub_models/usage.dart';
 
-part 'openai_chat_completion_model.g.dart';
+part 'chat.g.dart';
 
 /// {@template openai_chat_completion_model}
 /// This class represents the chat completion response model of the OpenAI API, which is used and returned while using the [OpenAIChat] methods.

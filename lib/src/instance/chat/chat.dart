@@ -4,6 +4,7 @@ import '../../core/base/chat/chat.dart';
 import '../../core/builder/base_api_url.dart';
 import '../../core/constants/strings.dart';
 import '../../core/models/chat/chat.dart';
+import '../../core/models/chat/sub_models/choices/sub_models/message.dart';
 import '../../core/models/tool/tool.dart';
 import '../../core/networking/client.dart';
 import '../../core/utils/logger.dart';
@@ -88,7 +89,7 @@ interface class OpenAIChat implements OpenAIChatBase {
       to: BaseApiUrlBuilder.build(endpoint),
       body: {
         'model': model,
-        'messages': messages.map((message) => message.toMap()).toList(),
+        'messages': messages.map((message) => message.toJson()).toList(),
         if (tools != null)
           'tools': tools.map((tool) => tool.toMap()).toList(growable: false),
         if (toolChoice != null) 'tool_choice': toolChoice,
@@ -106,9 +107,7 @@ interface class OpenAIChat implements OpenAIChatBase {
         if (logprobs != null) 'logprobs': logprobs,
         if (topLogprobs != null) 'top_logprobs': topLogprobs,
       },
-      onSuccess: (response) {
-        return OpenAIChatCompletionModel.fromMap(response);
-      },
+      onSuccess: OpenAIChatCompletionModel.fromJson,
       client: client,
     );
   }
@@ -184,7 +183,7 @@ interface class OpenAIChat implements OpenAIChatBase {
       body: {
         'model': model,
         'stream': true,
-        'messages': messages.map((message) => message.toMap()).toList(),
+        'messages': messages.map((message) => message.toJson()).toList(),
         if (tools != null)
           'tools': tools.map((tool) => tool.toMap()).toList(growable: false),
         if (toolChoice != null) 'tool_choice': toolChoice,
@@ -200,9 +199,7 @@ interface class OpenAIChat implements OpenAIChatBase {
         if (seed != null) 'seed': seed,
         if (responseFormat != null) 'response_format': responseFormat,
       },
-      onSuccess: (response) {
-        return OpenAIStreamChatCompletionModel.fromMap(response);
-      },
+      onSuccess: OpenAIStreamChatCompletionModel.fromJson,
       client: client,
     );
   }
@@ -231,7 +228,7 @@ interface class OpenAIChat implements OpenAIChatBase {
       body: {
         'model': model,
         'stream': true,
-        'messages': messages.map((message) => message.toMap()).toList(),
+        'messages': messages.map((message) => message.toJson()).toList(),
         if (tools != null)
           'tools': tools.map((tool) => tool.toMap()).toList(growable: false),
         if (toolChoice != null) 'tool_choice': toolChoice,
@@ -247,9 +244,7 @@ interface class OpenAIChat implements OpenAIChatBase {
         if (seed != null) 'seed': seed,
         if (responseFormat != null) 'response_format': responseFormat,
       },
-      onSuccess: (response) {
-        return OpenAIStreamChatCompletionModel.fromMap(response);
-      },
+      onSuccess: OpenAIStreamChatCompletionModel.fromJson,
       client: client,
     );
   }

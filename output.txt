@@ -1,0 +1,241 @@
+.
+├── CHANGELOG.md
+├── LICENSE
+├── README.md
+├── analysis_options.yaml
+├── example
+│   ├── CHANGELOG.md
+│   ├── README.md
+│   ├── analysis_options.yaml
+│   ├── lib
+│   │   ├── chat_completion_example.dart
+│   │   ├── chat_completion_stream_example.dart
+│   │   ├── chat_completion_with_log_probs_example.dart
+│   │   ├── chat_example_with_tools.dart
+│   │   ├── chat_stream_example.dart
+│   │   ├── chat_stream_example_with_function_call.dart
+│   │   ├── completion_example.dart
+│   │   ├── completion_stream.dart
+│   │   ├── create_audio_speech.dart
+│   │   ├── create_audio_transcription.dart
+│   │   ├── create_audio_translation.dart
+│   │   ├── edit_example.dart
+│   │   ├── embeddings_example.dart
+│   │   ├── env
+│   │   │   └── env.dart
+│   │   ├── example_for_testing_stream_error.dart
+│   │   ├── fine_tune._stream.dart
+│   │   ├── image_edit_example.dart
+│   │   ├── image_variation_example.dart
+│   │   ├── islamic_chat.dart
+│   │   ├── list_all_files.dart
+│   │   ├── log_response_bodies.dart
+│   │   ├── main.dart
+│   │   ├── moderation_example.dart
+│   │   ├── one_chat_message_example.dart
+│   │   ├── one_word_completion.dart
+│   │   ├── request_with_custom_client.dart
+│   │   ├── sentence_completion.dart
+│   │   ├── setting_for_web_env.dart
+│   │   ├── simple_tools_demo.dart
+│   │   ├── stream_request_with_custom_client.dart
+│   │   └── testing_file_ignore.dart
+│   ├── pubspec.lock
+│   └── pubspec.yaml
+├── lib
+│   ├── dart_openai.dart
+│   └── src
+│       ├── core
+│       │   ├── base
+│       │   │   ├── audio
+│       │   │   │   ├── audio.dart
+│       │   │   │   └── interfaces.dart
+│       │   │   ├── chat
+│       │   │   │   ├── chat.dart
+│       │   │   │   └── interfaces
+│       │   │   │       └── create.dart
+│       │   │   ├── completion.dart
+│       │   │   ├── edits
+│       │   │   │   ├── edits.dart
+│       │   │   │   └── interfaces
+│       │   │   │       └── create.dart
+│       │   │   ├── embeddings
+│       │   │   │   ├── base.dart
+│       │   │   │   └── interfaces
+│       │   │   │       └── create.dart
+│       │   │   ├── entity
+│       │   │   │   ├── base.dart
+│       │   │   │   └── interfaces
+│       │   │   │       └── enpoint.dart
+│       │   │   ├── files
+│       │   │   │   ├── base.dart
+│       │   │   │   └── interfaces
+│       │   │   │       ├── delete.dart
+│       │   │   │       ├── list.dart
+│       │   │   │       ├── retrieve_content.dart
+│       │   │   │       ├── retrive.dart
+│       │   │   │       └── upload.dart
+│       │   │   ├── fine_tunes
+│       │   │   │   ├── base.dart
+│       │   │   │   └── interfaces
+│       │   │   │       ├── cancel.dart
+│       │   │   │       ├── create.dart
+│       │   │   │       ├── delete.dart
+│       │   │   │       ├── events.dart
+│       │   │   │       ├── list.dart
+│       │   │   │       ├── retrieve.dart
+│       │   │   │       └── stream_events.dart
+│       │   │   ├── images
+│       │   │   │   ├── base.dart
+│       │   │   │   └── interfaces
+│       │   │   │       ├── create.dart
+│       │   │   │       ├── edit.dart
+│       │   │   │       └── variations.dart
+│       │   │   ├── interfaces
+│       │   │   │   └── create.dart
+│       │   │   ├── model
+│       │   │   │   ├── base.dart
+│       │   │   │   └── interfaces
+│       │   │   │       ├── delete.dart
+│       │   │   │       ├── list.dart
+│       │   │   │       └── one.dart
+│       │   │   ├── moderations
+│       │   │   │   ├── base.dart
+│       │   │   │   └── interfaces
+│       │   │   │       └── create.dart
+│       │   │   └── openai_client
+│       │   │       └── base.dart
+│       │   ├── builder
+│       │   │   ├── base_api_url.dart
+│       │   │   └── headers.dart
+│       │   ├── constants
+│       │   │   ├── config.dart
+│       │   │   ├── endpoints.dart
+│       │   │   └── strings.dart
+│       │   ├── enum.dart
+│       │   ├── exceptions
+│       │   │   ├── api_key_not_set.dart
+│       │   │   ├── export.dart
+│       │   │   ├── request_failure.dart
+│       │   │   └── unexpected.dart
+│       │   ├── models
+│       │   │   ├── audio
+│       │   │   │   └── audio.dart
+│       │   │   ├── chat
+│       │   │   │   ├── chat.dart
+│       │   │   │   ├── etc
+│       │   │   │   │   └── message_adapter.dart
+│       │   │   │   ├── stream
+│       │   │   │   │   ├── chat.dart
+│       │   │   │   │   └── sub_models
+│       │   │   │   │       ├── choices
+│       │   │   │   │       │   ├── choices.dart
+│       │   │   │   │       │   └── sub_models
+│       │   │   │   │       │       └── delta.dart
+│       │   │   │   │       └── usage.dart
+│       │   │   │   └── sub_models
+│       │   │   │       ├── choices
+│       │   │   │       │   ├── choices.dart
+│       │   │   │       │   └── sub_models
+│       │   │   │       │       ├── log_probs
+│       │   │   │       │       │   ├── log_probs.dart
+│       │   │   │       │       │   └── sub_models
+│       │   │   │       │       │       ├── content.dart
+│       │   │   │       │       │       └── top_prob.dart
+│       │   │   │       │       ├── message.dart
+│       │   │   │       │       └── sub_models
+│       │   │   │       │           ├── content.dart
+│       │   │   │       │           ├── sub_models
+│       │   │   │       │           │   └── response_function_call.dart
+│       │   │   │       │           └── tool_call.dart
+│       │   │   │       └── usage.dart
+│       │   │   ├── completion
+│       │   │   │   ├── completion.dart
+│       │   │   │   ├── stream
+│       │   │   │   │   ├── completion.dart
+│       │   │   │   │   └── sub_models
+│       │   │   │   │       └── choices.dart
+│       │   │   │   └── sub_models
+│       │   │   │       ├── choice.dart
+│       │   │   │       └── usage.dart
+│       │   │   ├── edit
+│       │   │   │   ├── edit.dart
+│       │   │   │   └── sub_models
+│       │   │   │       ├── choice.dart
+│       │   │   │       └── usage.dart
+│       │   │   ├── embedding
+│       │   │   │   ├── embedding.dart
+│       │   │   │   └── sub-models
+│       │   │   │       ├── data.dart
+│       │   │   │       └── usage.dart
+│       │   │   ├── export.dart
+│       │   │   ├── file
+│       │   │   │   └── file.dart
+│       │   │   ├── fine_tune
+│       │   │   │   ├── fine_tune.dart
+│       │   │   │   ├── stream
+│       │   │   │   │   └── fine_tun_event.dart
+│       │   │   │   └── sub_models
+│       │   │   │       ├── event.dart
+│       │   │   │       ├── hyper_params.dart
+│       │   │   │       └── training_files.dart
+│       │   │   ├── image
+│       │   │   │   └── image
+│       │   │   │       ├── image.dart
+│       │   │   │       └── sub_models
+│       │   │   │           └── data.dart
+│       │   │   ├── model
+│       │   │   │   ├── model.dart
+│       │   │   │   └── sub_models
+│       │   │   │       └── permission.dart
+│       │   │   ├── moderation
+│       │   │   │   ├── moderation.dart
+│       │   │   │   └── sub_models
+│       │   │   │       ├── catgeories.dart
+│       │   │   │       ├── catgeories_scores.dart
+│       │   │   │       └── result.dart
+│       │   │   └── tool
+│       │   │       ├── function
+│       │   │       │   ├── function.dart
+│       │   │       │   ├── function_call.dart
+│       │   │       │   ├── function_call_response.dart
+│       │   │       │   ├── property.dart
+│       │   │       │   └── stream_function_call_response.dart
+│       │   │       └── tool.dart
+│       │   ├── networking
+│       │   │   └── client.dart
+│       │   └── utils
+│       │       ├── extensions.dart
+│       │       ├── logger.dart
+│       │       ├── streaming_http_client_default.dart
+│       │       ├── streaming_http_client_io.dart
+│       │       └── streaming_http_client_web.dart
+│       └── instance
+│           ├── audio
+│           │   └── audio.dart
+│           ├── chat
+│           │   └── chat.dart
+│           ├── completion
+│           │   └── completion.dart
+│           ├── edits
+│           │   └── edits.dart
+│           ├── embedding
+│           │   └── embedding.dart
+│           ├── files
+│           │   └── files.dart
+│           ├── fine_tunes
+│           │   └── fine_tunes.dart
+│           ├── images
+│           │   └── images.dart
+│           ├── model
+│           │   └── model.dart
+│           ├── moderations
+│           │   └── moderations.dart
+│           └── openai.dart
+├── output.txt
+├── pubspec.lock
+├── pubspec.yaml
+└── test
+    └── openai_test.dart
+
+82 directories, 157 files

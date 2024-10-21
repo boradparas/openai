@@ -189,6 +189,6 @@ final class OpenAI extends OpenAIClientBase {
   /// });
   /// ```
   static void includeHeaders(Map<String, dynamic> headers) {
-    HeadersBuilder.includeHeaders(headers);
+    HeadersBuilder.includeHeaders(headers as Map<String, String>);
   }
 }

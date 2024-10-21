@@ -8,7 +8,7 @@ import 'sub_models/usage.dart';
 export 'sub_models/choices/choices.dart';
 export 'sub_models/usage.dart';
 
-part 'openai_stream_chat_completion_model.g.dart';
+part 'chat.g.dart';
 
 /// {@template openai_stream_chat_completion}
 /// The [OpenAIStreamChatCompletionModel] class represents the chat completion response model of the OpenAI API, which is used and returned while using the chat methods that leverage [Stream] functionality.

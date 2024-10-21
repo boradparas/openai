@@ -87,6 +87,7 @@ class OpenAIChatStreamLineSplitter
 
 const openAIChatStreamLineSplitter = LineSplitter();
 
+// ignore: avoid_classes_with_only_static_members
 @protected
 @immutable
 abstract class OpenAINetworkingClient {
@@ -125,8 +126,8 @@ abstract class OpenAINetworkingClient {
 
     if (doesErrorExists(decodedBody)) {
       final Map<String, dynamic> error =
-          decodedBody[OpenAIStrings.errorFieldKey];
-      final message = error[OpenAIStrings.messageFieldKey];
+          decodedBody[OpenAIStrings.errorFieldKey] as Map<String, dynamic>;
+      final message = error[OpenAIStrings.messageFieldKey] as String;
       final statusCode = response.statusCode;
 
       final exception = RequestFailedException(message, statusCode);
@@ -193,7 +194,7 @@ abstract class OpenAINetworkingClient {
         },
         onDone: close,
         onError: (err) {
-          controller.addError(err);
+          controller.addError(err as Exception);
         },
       );
     });
@@ -237,7 +238,7 @@ abstract class OpenAINetworkingClient {
 
         final error = decodedBody[OpenAIStrings.errorFieldKey];
 
-        final message = error[OpenAIStrings.messageFieldKey];
+        final message = error[OpenAIStrings.messageFieldKey] as String;
 
         final statusCode = response.statusCode;
 
@@ -267,8 +268,7 @@ abstract class OpenAINetworkingClient {
           '$outputFileName.$fileExtensionFromBodyResponseFormat';
 
       File file = File(
-        (outputDirectory != null ? outputDirectory.path : '') '/' +
-            fileName,
+        (outputDirectory != null ? outputDirectory.path : '') '/$fileName',
       );
 
       OpenAILogger.creatingFile(fileName);
@@ -323,8 +323,8 @@ abstract class OpenAINetworkingClient {
 
     if (doesErrorExists(decodedBody)) {
       final Map<String, dynamic> error =
-          decodedBody[OpenAIStrings.errorFieldKey];
-      final message = error[OpenAIStrings.messageFieldKey];
+          decodedBody[OpenAIStrings.errorFieldKey] as Map<String, dynamic>;
+      final message = error[OpenAIStrings.messageFieldKey] as String;
       final statusCode = response.statusCode;
 
       final exception = RequestFailedException(message, statusCode);
@@ -475,9 +475,9 @@ abstract class OpenAINetworkingClient {
 
     if (doesErrorExists(decodedBody)) {
       final Map<String, dynamic> error =
-          decodedBody[OpenAIStrings.errorFieldKey];
+          decodedBody[OpenAIStrings.errorFieldKey] as Map<String, dynamic>;
 
-      final message = error[OpenAIStrings.messageFieldKey];
+      final message = error[OpenAIStrings.messageFieldKey] as String;
       final statusCode = response.statusCode;
 
       final exception = RequestFailedException(message, statusCode);
@@ -528,8 +528,8 @@ abstract class OpenAINetworkingClient {
 
     if (doesErrorExists(decodedBody)) {
       final Map<String, dynamic> error =
-          decodedBody[OpenAIStrings.errorFieldKey];
-      final message = error[OpenAIStrings.messageFieldKey];
+          decodedBody[OpenAIStrings.errorFieldKey] as Map<String, dynamic>;
+      final message = error[OpenAIStrings.messageFieldKey] as String;
       final statusCode = response.statusCode;
 
       final exception = RequestFailedException(message, statusCode);
@@ -585,10 +585,10 @@ abstract class OpenAINetworkingClient {
     };
 
     OpenAILogger.decodedSuccessfully();
-    if (doesErrorExists(resultBody)) {
+    if (doesErrorExists(resultBody as Map<String, dynamic>)) {
       final Map<String, dynamic> error =
-          resultBody[OpenAIStrings.errorFieldKey];
-      final message = error[OpenAIStrings.messageFieldKey];
+          resultBody[OpenAIStrings.errorFieldKey] as Map<String, dynamic>;
+      final message = error[OpenAIStrings.messageFieldKey] as String;
       final statusCode = response.statusCode;
 
       final exception = RequestFailedException(message, statusCode);
@@ -630,8 +630,8 @@ abstract class OpenAINetworkingClient {
 
     if (doesErrorExists(decodedBody)) {
       final Map<String, dynamic> error =
-          decodedBody[OpenAIStrings.errorFieldKey];
-      final String message = error[OpenAIStrings.messageFieldKey];
+          decodedBody[OpenAIStrings.errorFieldKey] as Map<String, dynamic>;
+      final String message = error[OpenAIStrings.messageFieldKey] as String;
       final statusCode = response.statusCode;
 
       final exception = RequestFailedException(message, statusCode);
@@ -668,6 +668,6 @@ abstract class OpenAINetworkingClient {
   }
 
   static http.Client _streamingHttpClient() {
-    return createClient();
+    throw createClient() ;
   }
 }

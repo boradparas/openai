@@ -1,3 +1,7 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
+
 import '../../../../../../../../../dart_openai.dart';
 import '../../../../../../../../instance/chat/chat.dart';
 import '../../../../../../export.dart';
@@ -5,59 +9,45 @@ import '../../../../../chat.dart';
 import '../../../../usage.dart';
 import '../../message.dart';
 
+part 'response_function_call.g.dart';
+
 /// {@template openai_chat_completion_response_function_model}
 /// This represents the response function of the [OpenAIChatCompletionChoiceMessageModel] model of the OpenAI API, which is used in the [OpenAIChat] methods.
 /// {@endtemplate}
-class OpenAIResponseFunction {
+@immutable
+@JsonSerializable(explicitToJson: true)
+class OpenAIResponseFunction extends Equatable {
   /// {@macro openai_chat_completion_response_function_model}
-  OpenAIResponseFunction({
-    required this.name,
+  const OpenAIResponseFunction({
     required this.arguments,
+    this.name,
   });
 
-  /// This method used to convert a [Map<String, dynamic>] object to a [OpenAIResponseFunction] object.
-  factory OpenAIResponseFunction.fromMap(Map<String, dynamic> map) {
-    return OpenAIResponseFunction(
-      name: map['name'],
-      arguments: map['arguments'],
-    );
-  }
+  /// Creates a new instance from a JSON map.
+  factory OpenAIResponseFunction.fromJson(Map<String, dynamic> json) =>
+      _$OpenAIResponseFunctionFromJson(json);
 
   /// The name of the function.
+  @JsonKey(name: 'name')
   final String? name;
 
   /// The arguments of the function.
-  final arguments;
+  @JsonKey(name: 'arguments')
+  final dynamic arguments;
 
-  //! Not sure if the arguments will always be a Map<String, dynamic>, if you do confirm it from OpenAI docs please open an issue.
-
-  /// Weither the function have a name or not.
+  /// Whether the function has a name.
   bool get hasName => name != null;
 
-  /// Weither the function have arguments or not.
-  bool get hasArguments => arguments != null;
+  /// Whether the function has arguments.
+  bool get haveArguments => arguments != null;
+
+  /// Converts the instance to a JSON map.
+  Map<String, dynamic> toJson() => _$OpenAIResponseFunctionToJson(this);
 
   @override
-  int get hashCode => name.hashCode ^ arguments.hashCode;
-
-  /// This method used to convert the [OpenAIResponseFunction] to a [Map<String, dynamic>] object.
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'arguments': arguments,
-    };
-  }
+  List<Object?> get props => [name, arguments];
 
   @override
   String toString() =>
       'OpenAIResponseFunction(name: $name, arguments: $arguments)';
-
-  @override
-  bool operator ==(covariant OpenAIResponseFunction other) {
-    if (identical(this, other)) {
-      return true;
-    }
-
-    return other.name == name && other.arguments == arguments;
-  }
 }
