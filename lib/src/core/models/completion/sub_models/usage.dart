@@ -1,10 +1,15 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
+part 'usage.g.dart';
 
 /// {@template openai_completion_model_usage}
 /// This represents the usage of a completion response.
 /// {@endtemplate}
 @immutable
-final class OpenAICompletionModelUsage {
+@JsonSerializable(explicitToJson: true)
+class OpenAICompletionModelUsage extends Equatable {
   /// {@macro openai_completion_model_usage}
   const OpenAICompletionModelUsage({
     required this.promptTokens,
@@ -12,41 +17,33 @@ final class OpenAICompletionModelUsage {
     required this.totalTokens,
   });
 
-  /// {@macro openai_completion_model_usage}
-  /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAICompletionModelUsage] object.
-  factory OpenAICompletionModelUsage.fromMap(Map<String, dynamic> json) {
-    return OpenAICompletionModelUsage(
-      promptTokens: json['prompt_tokens'],
-      completionTokens: json['completion_tokens'],
-      totalTokens: json['total_tokens'],
-    );
-  }
+  /// Factory constructor for creating a new `OpenAICompletionModelUsage` instance from a JSON map.
+  factory OpenAICompletionModelUsage.fromJson(Map<String, dynamic> json) =>
+      _$OpenAICompletionModelUsageFromJson(json);
 
-  /// The number of tokens in the prompt.
-  final int promptTokens;
+  /// Creates a new instance from a map.
+  factory OpenAICompletionModelUsage.fromMap(Map<String, dynamic> map) =>
+      OpenAICompletionModelUsage.fromJson(map);
 
   /// The number of tokens in the completion.
+  @JsonKey(name: 'completion_tokens')
   final int completionTokens;
 
+  /// The number of tokens in the prompt.
+  @JsonKey(name: 'prompt_tokens')
+  final int promptTokens;
+
   /// The total number of tokens in the prompt and completion.
+  @JsonKey(name: 'total_tokens')
   final int totalTokens;
 
   @override
-  int get hashCode =>
-      promptTokens.hashCode ^ completionTokens.hashCode ^ totalTokens.hashCode;
-
-  @override
-  bool operator ==(covariant OpenAICompletionModelUsage other) {
-    if (identical(this, other)) {
-      return true;
-    }
-
-    return other.promptTokens == promptTokens &&
-        other.completionTokens == completionTokens &&
-        other.totalTokens == totalTokens;
-  }
+  List<Object?> get props => [promptTokens, completionTokens, totalTokens];
 
   @override
   String toString() =>
       'OpenAICompletionModelUsage(promptTokens: $promptTokens, completionTokens: $completionTokens, totalTokens: $totalTokens)';
+
+  /// Converts the `OpenAICompletionModelUsage` instance to a JSON map.
+  Map<String, dynamic> toJson() => _$OpenAICompletionModelUsageToJson(this);
 }

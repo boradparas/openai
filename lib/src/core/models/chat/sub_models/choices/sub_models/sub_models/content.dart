@@ -2,10 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../../../../dart_openai.dart';
-import '../../../../../export.dart';
-import '../../../../chat.dart';
-import '../../../usage.dart';
 import '../message.dart';
 
 part 'content.g.dart';

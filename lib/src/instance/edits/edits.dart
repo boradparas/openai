@@ -67,7 +67,7 @@ interface class OpenAIEdits implements OpenAIEditsBase {
         if (topP != null) 'top_p': topP,
       },
       onSuccess: (response) {
-        return OpenAIEditModel.fromMap(response);
+        return OpenAIEditModel.fromJson(response);
       },
     );
   }

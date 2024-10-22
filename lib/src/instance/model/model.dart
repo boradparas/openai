@@ -40,7 +40,9 @@ interface class OpenAIModel implements OpenAIModelBase {
     final List<dynamic> data = (response['data'] ?? []) as List<dynamic>;
 
     return data
-        .map((model) => OpenAIModelModel.fromMap(model as Map<String, dynamic>))
+        .map(
+          (model) => OpenAIModelModel.fromJson(model as Map<String, dynamic>),
+        )
         .toList();
   }
 
@@ -61,7 +63,7 @@ interface class OpenAIModel implements OpenAIModelBase {
       client: client,
     );
 
-    return OpenAIModelModel.fromMap(response);
+    return OpenAIModelModel.fromJson(response);
   }
 
   /// Deletes a fine-tuned model and returns [true] if the model has been deleted successfully.
@@ -80,7 +82,7 @@ interface class OpenAIModel implements OpenAIModelBase {
       from: BaseApiUrlBuilder.build(deleteEndpoint),
       client: client,
       onSuccess: (response) {
-        return true;
+        return response;
       },
     );
 

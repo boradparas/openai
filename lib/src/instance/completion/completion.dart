@@ -139,7 +139,7 @@ interface class OpenAICompletion implements OpenAICompletionBase {
         if (seed != null) 'seed': seed,
       },
       onSuccess: (response) {
-        return OpenAICompletionModel.fromMap(response);
+        return OpenAICompletionModel.fromJson(response);
       },
     );
   }
@@ -255,7 +255,7 @@ interface class OpenAICompletion implements OpenAICompletionBase {
         if (seed != null) 'seed': seed,
       },
       onSuccess: (response) {
-        return OpenAIStreamCompletionModel.fromMap(response);
+        return OpenAIStreamCompletionModel.fromJson(response);
       },
     );
   }

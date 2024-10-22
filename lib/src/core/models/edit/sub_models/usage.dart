@@ -1,10 +1,15 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
+part 'usage.g.dart';
 
 /// {@template openai_edit_model_usage}
 /// This class is used to represent the usage of an OpenAI completion.
 /// {@endtemplate}
 @immutable
-final class OpenAIEditModelUsage {
+@JsonSerializable()
+final class OpenAIEditModelUsage extends Equatable {
   /// {@macro openai_edit_model_usage}
   const OpenAIEditModelUsage({
     required this.promptTokens,
@@ -15,37 +20,25 @@ final class OpenAIEditModelUsage {
   /// {@template openai_edit_model_usage}
   /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIEditModelUsage] object.
   /// {@endtemplate}
-  factory OpenAIEditModelUsage.fromMap(Map<String, dynamic> json) {
-    return OpenAIEditModelUsage(
-      promptTokens: json['prompt_tokens'],
-      completionTokens: json['completion_tokens'],
-      totalTokens: json['total_tokens'],
-    );
-  }
+  factory OpenAIEditModelUsage.fromJson(Map<String, dynamic> json) =>
+      _$OpenAIEditModelUsageFromJson(json);
 
   /// The number of tokens in the prompt.
+  @JsonKey(name: 'prompt_tokens')
   final int promptTokens;
 
   /// The number of tokens in the completion.
+  @JsonKey(name: 'completion_tokens')
   final int completionTokens;
 
   /// The total number of tokens in the prompt and completion.
+  @JsonKey(name: 'total_tokens')
   final int totalTokens;
 
-  @override
-  int get hashCode =>
-      promptTokens.hashCode ^ completionTokens.hashCode ^ totalTokens.hashCode;
+  Map<String, dynamic> toJson() => _$OpenAIEditModelUsageToJson(this);
 
   @override
-  bool operator ==(covariant OpenAIEditModelUsage other) {
-    if (identical(this, other)) {
-      return true;
-    }
-
-    return other.promptTokens == promptTokens &&
-        other.completionTokens == completionTokens &&
-        other.totalTokens == totalTokens;
-  }
+  List<Object?> get props => [promptTokens, completionTokens, totalTokens];
 
   @override
   String toString() =>

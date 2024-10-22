@@ -1,3 +1,5 @@
+// ignore_for_file: discarded_futures, avoid_catches_without_on_clauses, use_string_buffers
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -17,7 +19,6 @@ import '../utils/streaming_http_client_default.dart'
 
 /// Handling exceptions returned by OpenAI Stream API.
 final class _OpenAIChatStreamSink implements EventSink<String> {
-
   _OpenAIChatStreamSink(this._sink);
   final EventSink<String> _sink;
 
@@ -238,6 +239,7 @@ abstract class OpenAINetworkingClient {
 
         final error = decodedBody[OpenAIStrings.errorFieldKey];
 
+        // ignore: avoid_dynamic_calls
         final message = error[OpenAIStrings.messageFieldKey] as String;
 
         final statusCode = response.statusCode;
@@ -260,15 +262,11 @@ abstract class OpenAINetworkingClient {
       OpenAILogger.requestFinishedSuccessfully();
 
       const fileTypeHeader = 'content-type';
-
       final fileExtensionFromBodyResponseFormat =
           response.headers[fileTypeHeader]?.split('/').last ?? 'mp3';
-
-      final fileName =
-          '$outputFileName.$fileExtensionFromBodyResponseFormat';
-
+      final fileName = '$outputFileName.$fileExtensionFromBodyResponseFormat';
       File file = File(
-        (outputDirectory != null ? outputDirectory.path : '') '/$fileName',
+        '${outputDirectory != null ? "${outputDirectory.path}/" : ""}$fileName',
       );
 
       OpenAILogger.creatingFile(fileName);
@@ -668,6 +666,6 @@ abstract class OpenAINetworkingClient {
   }
 
   static http.Client _streamingHttpClient() {
-    throw createClient() ;
+    throw createClient();
   }
 }
